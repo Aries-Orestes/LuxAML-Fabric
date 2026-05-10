@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxAML Fabric — LuxAML Fabric Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+<style>
+/* ══════════════════════════════════════════
+   LUXAML FABRIC — COMPLETE CSS RESET
+   Background: dark navy-blue gradient (fixed)
+   Cards: pure white with shadow
+   Text on page: white
+   Text on cards: #0F2044 (dark navy)
+   Accent: #00A3E0 (Luxembourg blue)
+   Red: #EF3340 (Luxembourg red)
+   ══════════════════════════════════════════ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Fixed dark gradient — same as original liked version */
+  background: linear-gradient(160deg, #0F2044 0%, #0055A5 60%, #0079C2 100%);
+  background-attachment: fixed;
+  color: #FFFFFF;
+}
+
+/* Subtle grid overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── FONTS ─── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap');
+
+/* ─── HERO ─── */
+.hero {
+  position: relative; z-index: 1;
+  padding: 0 40px 40px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.hero-stripe { display: flex; height: 5px; margin-bottom: 36px; }
+.hero-stripe span { flex: 1; }
+.hero-stripe .s-red   { background: #EF3340; }
+.hero-stripe .s-white { background: #FFFFFF; }
+.hero-stripe .s-blue  { background: #00A3E0; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.90); font-size: 11px; font-weight: 500;
+  padding: 4px 14px; border-radius: 20px; letter-spacing: 0.08em;
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.hero-badge::before { content: '●'; font-size: 8px; color: #7EFFC0; margin-right: 2px; }
+
+.hero h1 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 400; line-height: 1.1;
+  color: #FFFFFF; margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+.hero h1 em { color: #7DD4F8; font-style: italic; }
+
+.hero-sub {
+  font-size: 15px; color: rgba(200,225,255,0.85);
+  max-width: 560px; margin: 0 auto 32px; line-height: 1.6;
+}
+
+/* ─── ENGINE TABS ─── */
+.engine-tabs { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+.engine-tab {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.10);
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  transition: all 0.2s; white-space: nowrap;
+  backdrop-filter: blur(6px);
+}
+.engine-tab:hover {
+  background: rgba(255,255,255,0.20);
+  border-color: rgba(255,255,255,0.50);
+  color: #FFFFFF;
+}
+.engine-tab.active {
+  background: #FFFFFF;
+  border-color: transparent;
+  color: #0F2044;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+.engine-tab .tab-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  background: rgba(255,255,255,0.20);
+  color: inherit;
+}
+.engine-tab.active .tab-num {
+  background: #0055A5; color: #FFFFFF;
+}
+
+/* ─── MAIN LAYOUT ─── */
+.main { position: relative; z-index: 1; padding: 32px 40px; max-width: 1200px; margin: 0 auto; }
+.engine-panel { display: none; }
+.engine-panel.active { display: block; }
+
+/* ─── SCENARIO HEADER ─── */
+.scenario-header {
+  display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start;
+  margin-bottom: 28px; padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.scenario-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.10em;
+  text-transform: uppercase; margin-bottom: 8px;
+  padding: 4px 12px; border-radius: 4px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.30);
+  color: #FFFFFF;
+}
+.scenario-header h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 400; line-height: 1.2;
+  color: #FFFFFF; margin-bottom: 6px;
+}
+.scenario-header p { font-size: 14px; color: rgba(200,225,255,0.85); line-height: 1.5; }
+.scenario-meta { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+.meta-chip {
+  font-size: 11px; padding: 4px 12px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.30);
+  color: rgba(255,255,255,0.90);
+  background: rgba(255,255,255,0.10);
+  white-space: nowrap; font-family: 'DM Mono', monospace;
+}
+
+/* ─── WHITE CARD BASE ─── */
+/* Everything inside a card has dark text */
+.insight-bar, .panel, .demo-area, .key-insight,
+.interactive-section, .str-form {
+  background: #FFFFFF;
+  border-radius: 14px;
+  color: #0F2044;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+}
+
+/* ─── INSIGHT BAR ─── */
+.insight-bar {
+  padding: 20px 24px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+  margin-bottom: 24px;
+}
+.insight-item { text-align: center; }
+.insight-val { font-size: 28px; font-weight: 700; margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+.insight-lbl { font-size: 11px; color: #3A5070; line-height: 1.4; font-weight: 500; }
+.i-red   .insight-val { color: #C42030; }
+.i-green .insight-val { color: #1A7A40; }
+.i-amber .insight-val { color: #B86A00; }
+.i-blue  .insight-val { color: #0055A5; }
+.i-teal  .insight-val { color: #006070; }
+.i-purple .insight-val { color: #5A30A0; }
+
+/* ─── SPLIT PANELS ─── */
+.split-panel {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
+}
+.panel { padding: 20px; position: relative; overflow: hidden; border: none; }
+.panel::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  border-radius: 14px 14px 0 0;
+}
+.panel-before { background: #FFF6F6; }
+.panel-before::before { background: linear-gradient(90deg, #EF3340, #FF8090); }
+.panel-after  { background: #F4FBF7; }
+.panel-after::before  { background: linear-gradient(90deg, #1A7A40, #2DC872); }
+
+.panel-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.10em;
+  text-transform: uppercase; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+.panel-before .panel-label { color: #C42030; }
+.panel-after  .panel-label { color: #1A7A40; }
+.panel-label::before { content: ''; width: 7px; height: 7px; border-radius: 50%; }
+.panel-before .panel-label::before { background: #EF3340; }
+.panel-after  .panel-label::before { background: #1A7A40; }
+
+/* ─── COMPONENTS INSIDE CARDS (all dark text) ─── */
+.card {
+  background: #F4F7FC; border: 1px solid #D8E4F0;
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 8px;
+  font-size: 13px; line-height: 1.4; color: #0F2044;
+}
+.card:last-child { margin-bottom: 0; }
+.card-title { font-weight: 600; color: #0F2044; margin-bottom: 3px; font-size: 12px; }
+.card-sub { color: #3A5070; font-size: 12px; }
+
+/* ─── STATUS BADGES ─── */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 4px;
+}
+.badge-red    { background: #FDECEA; color: #B01020; border: 1px solid #F5C0C0; }
+.badge-green  { background: #E8F5EE; color: #0A5E2A; border: 1px solid #A8DBBE; }
+.badge-amber  { background: #FEF4E2; color: #7A4800; border: 1px solid #F5CE88; }
+.badge-blue   { background: #E8F0FC; color: #003A80; border: 1px solid #A8C0E8; }
+.badge-purple { background: #F0EBFF; color: #3A1A80; border: 1px solid #C8B8F0; }
+.badge-teal   { background: #E6F5F4; color: #005050; border: 1px solid #A0D4D0; }
+
+/* ─── DOC ITEMS ─── */
+.doc-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  border: 1px solid #D8E4F0; background: #F8FAFD;
+  margin-bottom: 6px; font-size: 12px; color: #0F2044;
+}
+.doc-item:last-child { margin-bottom: 0; }
+.doc-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.doc-content { flex: 1; }
+.doc-title { font-weight: 600; color: #0F2044; font-size: 12px; margin-bottom: 2px; }
+.doc-meta  { color: #3A5070; font-size: 11px; font-family: 'DM Mono', monospace; }
+.doc-bad    { border-color: #F5C0C0; background: #FEF5F5; }
+.doc-ok     { border-color: #A8DBBE; background: #F4FBF7; }
+.doc-warn   { border-color: #F5CE88; background: #FFFBF2; }
+.doc-blue   { border-color: #A8C0E8; background: #F0F5FC; }
+.doc-teal   { border-color: #A0D4D0; background: #F0F9F8; }
+.doc-purple { border-color: #C8B8F0; background: #F5F0FF; }
+
+/* ─── PERSON BUBBLES ─── */
+.person-bubble { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+.person-bubble:last-child { margin-bottom: 0; }
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+.av-bank  { background: #DBEAFE; color: #1E3A6E; border: 2px solid #A8C0E8; }
+.av-reg   { background: #D1FAE5; color: #064E2E; border: 2px solid #6EE7B7; }
+.av-hq    { background: #FEF3C7; color: #6B3A00; border: 2px solid #FCD34D; }
+.av-ai    { background: #EDE9FE; color: #2D1066; border: 2px solid #C4B5FD; }
+.av-audit { background: #FFE4CC; color: #6B2C00; border: 2px solid #FDB06C; }
+.av-crf   { background: #D1FAE5; color: #064E2E; border: 2px solid #6EE7B7; }
+.speech {
+  flex: 1; background: #F4F7FC; border: 1px solid #D8E4F0;
+  border-radius: 0 10px 10px 10px; padding: 9px 13px;
+  font-size: 12px; line-height: 1.6; color: #0F2044;
+}
+.speech-name {
+  font-size: 10px; font-weight: 700; color: #0055A5;
+  margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; display: block;
+}
+.arrow-down { text-align: center; font-size: 16px; color: #8899BB; margin: 4px 0; }
+
+/* ─── METRICS ─── */
+.metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.metric {
+  background: #F4F7FC; border: 1px solid #D8E4F0;
+  border-radius: 8px; padding: 10px 12px; text-align: center;
+}
+.metric-val { font-size: 20px; font-weight: 700; font-family: 'DM Mono', monospace; margin-bottom: 2px; }
+.metric-lbl { font-size: 10px; color: #3A5070; line-height: 1.3; font-weight: 500; }
+.metric.bad  .metric-val { color: #C42030; }
+.metric.warn .metric-val { color: #B86A00; }
+.metric.good .metric-val { color: #1A7A40; }
+.metric.info .metric-val { color: #0055A5; }
+
+/* ─── RULE CARDS ─── */
+.rule-card {
+  background: #F8FAFD; border: 1px solid #D8E4F0;
+  border-left: 4px solid #0055A5; border-radius: 8px;
+  padding: 11px 13px; margin-bottom: 8px; color: #0F2044;
+}
+.rule-card:last-child { margin-bottom: 0; }
+.rule-id   { font-family: 'DM Mono', monospace; font-size: 10px; color: #0055A5; margin-bottom: 3px; font-weight: 600; }
+.rule-text { color: #0F2044; font-size: 12px; margin-bottom: 6px; line-height: 1.5; }
+.rule-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ─── ALERT BOXES ─── */
+.alert-box {
+  border-radius: 8px; padding: 12px 14px; font-size: 12px;
+  line-height: 1.5; margin-bottom: 8px; border: 1px solid;
+  color: #0F2044;
+}
+.alert-red    { background: #FEF5F5; border-color: #F5C0C0; }
+.alert-green  { background: #F4FBF7; border-color: #A8DBBE; }
+.alert-amber  { background: #FFFBF2; border-color: #F5CE88; }
+.alert-blue   { background: #F0F5FC; border-color: #A8C0E8; }
+.alert-title  { font-weight: 700; margin-bottom: 4px; font-size: 12px; }
+.alert-red   .alert-title { color: #B01020; }
+.alert-green .alert-title { color: #0A5E2A; }
+.alert-amber .alert-title { color: #7A4800; }
+.alert-blue  .alert-title { color: #003A80; }
+
+/* ─── INTERACTIVE SECTION / DEMO AREA ─── */
+.interactive-section { padding: 24px; margin-bottom: 24px; }
+.demo-area { padding: 24px; }
+.section-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.10em;
+  text-transform: uppercase; color: #0055A5; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::before { content: ''; width: 16px; height: 2px; background: #0055A5; border-radius: 1px; }
+
+/* ─── BUTTONS ─── */
+.demo-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 8px; font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+  transition: all 0.18s; letter-spacing: 0.01em;
+}
+.btn-primary { background: #0055A5; color: #FFFFFF; }
+.btn-primary:hover { background: #003E7E; }
+.btn-green   { background: #1A7A40; color: #FFFFFF; }
+.btn-green:hover { background: #125C30; }
+.btn-teal    { background: #006878; color: #FFFFFF; }
+.btn-teal:hover  { background: #004E5C; }
+.btn-amber   { background: #B86A00; color: #FFFFFF; }
+.btn-amber:hover { background: #8A5000; }
+.btn-ghost {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.35) !important;
+  color: #FFFFFF; font-weight: 500;
+}
+/* ghost buttons INSIDE white cards need dark style */
+.demo-area .btn-ghost, .interactive-section .btn-ghost {
+  background: #F4F7FC;
+  border: 1px solid #D8E4F0 !important;
+  color: #0F2044;
+}
+.demo-area .btn-ghost:hover, .interactive-section .btn-ghost:hover {
+  background: #E8EEF8; border-color: #0055A5 !important; color: #0055A5;
+}
+
+/* demo-controls text (inside white card) */
+.demo-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+
+/* ─── DEMO OUTPUT ─── */
+.demo-output {
+  min-height: 100px; background: #F4F7FC; border: 1px solid #D8E4F0;
+  border-radius: 8px; padding: 14px; font-size: 12px; line-height: 1.6;
+  transition: all 0.3s; color: #0F2044;
+}
+.demo-output .placeholder { color: #8899BB; font-weight: 500; }
+
+/* ─── STEP INDICATOR ─── */
+.step-row { display: flex; gap: 4px; margin-bottom: 14px; align-items: center; }
+.step-item {
+  flex: 1; height: 6px; border-radius: 3px;
+  background: #D8E4F0; transition: background 0.3s;
+}
+.step-item.done        { background: #0055A5; }
+.step-item.done.green  { background: #1A7A40; }
+.step-item.done.teal   { background: #006878; }
+.step-item.done.purple { background: #5A30A0; }
+.step-item.done.amber  { background: #B86A00; }
+.step-label { font-size: 11px; color: #0F2044; font-weight: 600; white-space: nowrap; margin-left: 10px; }
+
+/* ─── PROGRESS BAR ─── */
+.progress-bar { height: 8px; background: #D8E4F0; border-radius: 4px; overflow: hidden; margin: 8px 0; }
+.progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; background: #0055A5; }
+
+/* ─── FLOW BOXES ─── */
+.flow { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.flow-box {
+  border-radius: 8px; padding: 10px 14px;
+  font-size: 12px; font-weight: 600; text-align: center; border: 1px solid;
+  color: #0F2044;
+}
+.fb-blue    { background: #EBF3FC; border-color: #A8C0E8; color: #003A80; }
+.fb-green   { background: #EBF8F2; border-color: #A8DBBE; color: #0A5E2A; }
+.fb-teal    { background: #E8F5F4; border-color: #A0D4D0; color: #005050; }
+.fb-purple  { background: #F0EBFF; border-color: #C8B8F0; color: #3A1A80; }
+.fb-amber   { background: #FEF8EC; border-color: #F5CE88; color: #7A4800; }
+.fb-neutral { background: #F4F7FC; border-color: #D8E4F0; color: #0F2044; }
+
+/* ─── TIMELINE ─── */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item { display: flex; gap: 12px; position: relative; }
+.tl-item:not(:last-child)::before {
+  content: ''; position: absolute; left: 9px; top: 22px;
+  width: 1px; height: calc(100% - 10px); background: #D8E4F0;
+}
+.tl-dot {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; margin-top: 12px;
+}
+.tl-red    { background: #FEF5F5; border: 2px solid #F5C0C0; color: #B01020; }
+.tl-green  { background: #F4FBF7; border: 2px solid #A8DBBE; color: #0A5E2A; }
+.tl-amber  { background: #FFFBF2; border: 2px solid #F5CE88; color: #7A4800; }
+.tl-blue   { background: #F0F5FC; border: 2px solid #A8C0E8; color: #003A80; }
+.tl-content { padding: 12px 0 14px; flex: 1; }
+.tl-title { font-size: 12px; font-weight: 600; color: #0F2044; margin-bottom: 2px; }
+.tl-sub   { font-size: 11px; color: #3A5070; line-height: 1.4; }
+
+/* ─── TEMPLATE ENGINE ─── */
+.template-section {
+  background: #FFFFFF; border: 1px solid #D8E4F0;
+  border-radius: 8px; padding: 11px 14px; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 10px; font-size: 12px; cursor: pointer;
+  transition: background 0.15s; color: #0F2044;
+}
+.template-section:hover { background: #EEF4FF; }
+.template-section.complete { border-left: 3px solid #1A7A40; }
+.template-section.partial  { border-left: 3px solid #B86A00; }
+.template-section.missing  { border-left: 3px solid #C42030; background: #FEF8F8; }
+.ts-num   { font-family: 'DM Mono', monospace; font-size: 10px; color: #5A7A9A; font-weight: 700; width: 20px; flex-shrink: 0; }
+.ts-title { flex: 1; font-weight: 600; color: #0F2044; font-size: 12px; }
+.ts-sub   { font-size: 10px; color: #3A5070; margin-top: 1px; }
+
+/* ─── MAPPING ENGINE ─── */
+.mapping-row {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px;
+  align-items: center; margin-bottom: 8px;
+}
+.map-source { background: #FEF8EC; border: 1px solid #F5CE88; border-radius: 8px; padding: 9px 11px; }
+.map-arrow  { color: #3A5070; font-size: 14px; text-align: center; }
+.map-local  { background: #F5F0FF; border: 1px solid #C8B8F0; border-radius: 8px; padding: 9px 11px; }
+.map-tag    { font-size: 9px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.map-source .map-tag { color: #7A4800; }
+.map-local  .map-tag { color: #3A1A80; }
+.map-rule   { color: #0F2044; font-size: 12px; line-height: 1.3; font-weight: 500; }
+.map-status-tag {
+  font-size: 9px; font-weight: 700; padding: 2px 7px;
+  border-radius: 3px; margin-top: 5px; display: inline-block;
+}
+.ms-apply    { background: #E8F5EE; color: #0A5E2A; }
+.ms-adapt    { background: #FEF4E2; color: #7A4800; }
+.ms-override { background: #F0EBFF; color: #3A1A80; }
+
+/* ─── DUAL OUTPUT ─── */
+.str-form { padding: 14px; margin-bottom: 10px; }
+.form-field { margin-bottom: 12px; }
+.form-label { font-size: 11px; color: #3A5070; margin-bottom: 4px; font-weight: 600; display: block; }
+.form-value {
+  font-size: 12px; color: #0F2044; font-weight: 500;
+  background: #F4F7FC; border: 1px solid #D8E4F0;
+  border-radius: 6px; padding: 7px 10px; font-family: 'DM Mono', monospace;
+}
+.output-card { border-radius: 8px; padding: 14px; margin-bottom: 8px; border: 1px solid; color: #0F2044; }
+.output-crf  { background: #EEF4FF; border-color: #A8C0E8; }
+.output-bank { background: #EEF9F5; border-color: #A0D4CC; }
+.output-title { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+.output-crf  .output-title { color: #003A80; }
+.output-bank .output-title { color: #005050; }
+.hash-display { font-family: 'DM Mono', monospace; font-size: 10px; color: #5A7A9A; word-break: break-all; line-height: 1.5; }
+.drift-indicator {
+  display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+  border-radius: 8px; border: 1px solid; margin-bottom: 6px; font-size: 12px; color: #0F2044;
+}
+.drift-green  { background: #F0FAF6; border-color: #A8DDB8; }
+.drift-amber  { background: #FFF8EE; border-color: #F5CE88; }
+.drift-red    { background: #FEF5F5; border-color: #F5C0C0; }
+.drift-dot    { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.drift-green  .drift-dot { background: #1A7A40; box-shadow: 0 0 6px rgba(26,122,64,0.5); }
+.drift-amber  .drift-dot { background: #B86A00; box-shadow: 0 0 6px rgba(184,106,0,0.5); }
+.drift-red    .drift-dot { background: #C42030; box-shadow: 0 0 6px rgba(196,32,48,0.5); }
+.drift-label  { font-weight: 700; color: #0F2044; }
+.drift-detail { font-size: 11px; color: #3A5070; }
+
+/* ─── KEY INSIGHT ─── */
+.key-insight { padding: 16px 18px; margin-top: 16px; font-size: 13px; line-height: 1.6; color: #0F2044; }
+.key-insight strong { color: #0055A5; font-weight: 700; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+@keyframes slide-in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin { to{transform:rotate(360deg)} }
+.processing { animation: pulse 1.2s ease-in-out infinite; }
+.slide-in   { animation: slide-in 0.3s ease forwards; }
+.spinner { width:16px; height:16px; border:2px solid #D8E4F0; border-top-color:#0055A5; border-radius:50%; animation:spin 0.8s linear infinite; display:inline-block; }
+
+/* ─── SCROLLABLE ─── */
+.scrollable { max-height: 220px; overflow-y: auto; }
+.scrollable::-webkit-scrollbar { width: 4px; }
+.scrollable::-webkit-scrollbar-track { background: #F4F7FC; }
+.scrollable::-webkit-scrollbar-thumb { background: #A8C0E8; border-radius: 2px; }
+
+/* ─── FOOTER ─── */
+.footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding: 20px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: rgba(255,255,255,0.65);
+  background: rgba(0,0,0,0.18);
+}
+.footer strong { color: rgba(255,255,255,0.92); font-weight: 600; }
+
+@media (max-width: 768px) {
+  .hero { padding: 0 20px 30px; }
+  .main { padding: 20px; }
+  .split-panel { grid-template-columns: 1fr; }
+  .insight-bar { grid-template-columns: 1fr 1fr; }
+  .engine-tabs { gap: 6px; }
+  .engine-tab { padding: 8px 12px; font-size: 12px; }
+  .footer { flex-direction: column; gap: 8px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── HERO ─── -->
+<div class="hero">
+  <div class="hero-stripe"><span class="s-red"></span><span class="s-white"></span><span class="s-blue"></span></div>
+  <div class="hero-badge">LuxAML Fabric — Live Demo</div>
+  <h1>LuxAML <em>Fabric</em></h1>
+  <p class="hero-sub">A national supervisory compliance fabric for Luxembourg. Select an engine below to see a live practical scenario for a small bank.</p>
+  <div class="engine-tabs">
+    <button class="engine-tab tab-e1 active" onclick="switchEngine(1)">
+      <span class="tab-num">1</span> Regulation as Code
+    </button>
+    <button class="engine-tab tab-e2" onclick="switchEngine(2)">
+      <span class="tab-num">2</span> Template Engine
+    </button>
+    <button class="engine-tab tab-e3" onclick="switchEngine(3)">
+      <span class="tab-num">3</span> Mapping Engine
+    </button>
+    <button class="engine-tab tab-e4" onclick="switchEngine(4)">
+      <span class="tab-num">4</span> Dual Output Engine
+    </button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ══════════════════════════════════════════════
+     ENGINE 1 — REGULATION AS CODE
+══════════════════════════════════════════════ -->
+<div class="engine-panel active" id="engine-1">
+  <div class="scenario-header">
+    <div>
+      <div class="scenario-tag tag-e1">Engine 1 — Regulation as Code</div>
+      <h2>Small Bank receives a new CSSF Circular on client due diligence</h2>
+      <p>Sarah, the AML Compliance Officer at the Small Bank, must process CSSF Circular 2024/569 updating EDD requirements for high-risk clients. She has 2 weeks before the next audit. Watch how RAC transforms her workflow.</p>
+    </div>
+    <div class="scenario-meta">
+      <span class="meta-chip">Pilot: Small Bank Luxembourg</span>
+      <span class="meta-chip">Role: AML Officer</span>
+      <span class="meta-chip">Circular: CSSF 2024/569</span>
+    </div>
+  </div>
+
+  <div class="insight-bar">
+    <div class="insight-item i-red">
+      <div class="insight-val">6 wks</div>
+      <div class="insight-lbl">Manual processing time<br>per regulation update</div>
+    </div>
+    <div class="insight-item i-green">
+      <div class="insight-val">&lt;4 hrs</div>
+      <div class="insight-lbl">With RAC engine<br>processing time</div>
+    </div>
+    <div class="insight-item i-amber">
+      <div class="insight-val">3 gaps</div>
+      <div class="insight-lbl">Auto-detected in the bank's<br>current programme</div>
+    </div>
+  </div>
+
+  <div class="split-panel">
+    <!-- BEFORE -->
+    <div class="panel panel-before">
+      <div class="panel-label">Before RAC — Sarah's reality</div>
+      <div class="person-bubble">
+        <div class="avatar av-bank">SB</div>
+        <div class="speech">
+          <div class="speech-name">Sarah — AML Officer, Small Bank</div>
+          "CSSF just published Circular 2024/847. It's 52 pages. I need to read all of it, figure out what changed from the previous version, and update our AML programme manually."
+        </div>
+      </div>
+      <div class="arrow-down">↓</div>
+      <div class="doc-item doc-bad">
+        <div class="doc-icon">📄</div>
+        <div class="doc-content">
+          <div class="doc-title">CSSF Circular 2024/847</div>
+          <div class="doc-meta">52 pages · PDF · Published 09:00 today</div>
+        </div>
+        <span class="status-badge badge-red">Unread</span>
+      </div>
+      <div class="doc-item doc-bad">
+        <div class="doc-icon">📄</div>
+        <div class="doc-content">
+          <div class="doc-title">Previous: CSSF Circular 2022/811</div>
+          <div class="doc-meta">38 pages · Manual comparison needed</div>
+        </div>
+        <span class="status-badge badge-amber">Compare</span>
+      </div>
+      <div class="doc-item doc-bad">
+        <div class="doc-icon">📋</div>
+        <div class="doc-content">
+          <div class="doc-title">Small Bank AML Programme v4.1</div>
+          <div class="doc-meta">Last updated 14 months ago</div>
+        </div>
+        <span class="status-badge badge-red">Outdated?</span>
+      </div>
+      <div class="metric-grid">
+        <div class="metric bad"><div class="metric-val">6 wks</div><div class="metric-lbl">to identify all<br>required changes</div></div>
+        <div class="metric bad"><div class="metric-val">High</div><div class="metric-lbl">risk of missing<br>critical rules</div></div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="panel panel-after">
+      <div class="panel-label">After RAC — automated intelligence</div>
+      <div class="person-bubble">
+        <div class="avatar av-ai">AI</div>
+        <div class="speech">
+          <div class="speech-name">RAC Engine — LuxAML Fabric</div>
+          "Circular 2024/847 processed. Detected 7 new obligations. Compared against Small Bank AML Programme v4.1. Found 3 gaps requiring immediate action."
+        </div>
+      </div>
+      <div class="arrow-down">↓</div>
+      <div id="rac-rules-output">
+        <div class="rule-card">
+          <div class="rule-id">RULE-569-B2.1 · NEW OBLIGATION</div>
+          <div class="rule-text">High-risk client EDD must include documented source-of-funds for transactions above €15,000.</div>
+          <div class="rule-meta">
+            <span class="status-badge badge-red">Gap in Small Bank programme</span>
+            <span class="status-badge badge-amber">Action required</span>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-id">RULE-569-C1.3 · UPDATED DEADLINE</div>
+          <div class="rule-text">STR filing deadline reduced from 5 to 3 business days for all suspicious activity.</div>
+          <div class="rule-meta">
+            <span class="status-badge badge-red">Procedure outdated</span>
+            <span class="status-badge badge-amber">Update section 4.3</span>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-id">RULE-569-A2.1 · NO CHANGE</div>
+          <div class="rule-text">KYC requirements for onboarding remain unchanged from Circular 2022/811.</div>
+          <div class="rule-meta">
+            <span class="status-badge badge-green">Bank compliant</span>
+            <span class="status-badge badge-blue">No action needed</span>
+          </div>
+        </div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric good"><div class="metric-val">&lt;4 hrs</div><div class="metric-lbl">full analysis<br>complete</div></div>
+        <div class="metric good"><div class="metric-val">Zero</div><div class="metric-lbl">rules missed<br>automatically</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE DEMO -->
+  <div class="demo-area">
+    <div class="section-title">Live Demo — RAC Engine Processing</div>
+    <p style="font-size:13px;color:#3A5070;margin-bottom:16px;">Click a regulation to watch the RAC engine extract rules and check the bank's programme for compliance gaps in real time.</p>
+
+    <div class="demo-controls">
+      <button class="demo-btn btn-primary" onclick="runRAC('crypto')">▶ Process Circular 2024/569 (EDD Update)</button>
+      <button class="demo-btn btn-ghost" onclick="runRAC('fatf')">▶ Process FATF Update 2024</button>
+      <button class="demo-btn btn-ghost" onclick="runRAC('aml')">▶ Process EU AMLR Article 19</button>
+    </div>
+
+    <div style="margin-bottom:10px">
+      <div class="step-row" id="rac-steps">
+        <div class="step-item" id="rs1"></div>
+        <div class="step-item" id="rs2"></div>
+        <div class="step-item" id="rs3"></div>
+        <div class="step-item" id="rs4"></div>
+        <div class="step-item" id="rs5"></div>
+        <span class="step-label" id="rac-step-label">Ready</span>
+      </div>
+    </div>
+
+    <div class="demo-output" id="rac-output">
+      <span style="color:#7A90AA;font-weight:500">→ Select a regulation above to begin processing…</span>
+    </div>
+  </div>
+
+  <div class="key-insight">
+    <strong>Why this matters for the stakeholders:</strong> Before RAC, Sarah spends 6 weeks reading legal text and manually comparing documents — every single time rules change. With RAC, the engine reads the regulation, extracts obligations as machine-readable rules, and checks the bank's programme automatically. <strong>The compliance officer becomes a decision-maker, not a document reader.</strong>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     ENGINE 2 — TEMPLATE ENGINE
+══════════════════════════════════════════════ -->
+<div class="engine-panel" id="engine-2">
+  <div class="scenario-header">
+    <div>
+      <div class="scenario-tag tag-e2">Engine 2 — Template Engine</div>
+      <h2>One national AML Programme Template — shared with every bank in Luxembourg</h2>
+      <p>The Template Engine produces a single, fully written national standard. Every bank fills in their details into the same 12-section structure. CSSF receives comparable documents. Auditors know exactly where to look.</p>
+    </div>
+    <div class="scenario-meta">
+      <span class="meta-chip">Version: v1.0 · 2026</span>
+      <span class="meta-chip">Sections: 12</span>
+      <span class="meta-chip">Applies to: All Luxembourg banks</span>
+    </div>
+  </div>
+
+  <div class="insight-bar">
+    <div class="insight-item i-red">
+      <div class="insight-val">0</div>
+      <div class="insight-lbl">Existing national standard<br>in Luxembourg today</div>
+    </div>
+    <div class="insight-item i-green">
+      <div class="insight-val">12</div>
+      <div class="insight-lbl">Standardised sections every<br>bank must complete</div>
+    </div>
+    <div class="insight-item i-teal">
+      <div class="insight-val">78%</div>
+      <div class="insight-lbl">the bank's current coverage —<br>4 gaps auto-detected</div>
+    </div>
+  </div>
+
+  <!-- WHITE CARD WRAPPER for entire tab area -->
+  <div style="background:#FFFFFF;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.22);overflow:hidden;margin-bottom:24px;">
+
+    <!-- TAB SWITCHER -->
+    <div style="display:flex;gap:0;border-bottom:2px solid #D8E4F0;background:#F4F7FC;">
+      <button id="tpl-tab-template" onclick="switchTplTab('template')"
+        style="padding:14px 22px;background:none;border:none;border-bottom:3px solid #0055A5;margin-bottom:-2px;color:#0055A5;font-weight:700;font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;">
+        📋 National Template
+      </button>
+      <button id="tpl-tab-gaps" onclick="switchTplTab('gaps')"
+        style="padding:14px 22px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;color:#3A5070;font-weight:500;font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;">
+        🔍 Small Bank Gap Analysis
+      </button>
+      <button id="tpl-tab-compare" onclick="switchTplTab('compare')"
+        style="padding:14px 22px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;color:#3A5070;font-weight:500;font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;">
+        📊 Cross-Bank Comparison
+      </button>
+    </div>
+
+    <!-- TAB 1: NATIONAL TEMPLATE -->
+    <div id="tpl-panel-template" style="padding:24px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div style="font-size:20px;font-weight:400;color:#0F2044;font-family:'DM Serif Display',Georgia,serif;">Luxembourg National AML Programme Template</div>
+          <div style="font-size:12px;color:#3A5070;font-weight:500;margin-top:4px;">Version 1.0 · Aligned with CSSF, EU AMLR, FATF, CRF</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <span class="status-badge badge-teal">12 sections</span>
+          <span class="status-badge badge-green">CSSF aligned</span>
+          <span class="status-badge badge-blue">AMLA ready</span>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#0F2044;background:#EEF9F5;border:1px solid #A0D4C8;border-radius:8px;padding:12px 14px;margin-bottom:16px;line-height:1.6;">
+        <strong style="color:#005050;font-weight:700">How to use this template:</strong> Every regulated institution in Luxembourg must complete all 12 sections below.
+        Fields marked <span style="background:#FEF4E2;color:#7A4800;font-weight:600;padding:1px 4px;border-radius:3px;">[ BANK TO COMPLETE ]</span> require institution-specific content.
+        This template is the same for all banks — only the filled-in content differs.
+      </div>
+      <div id="national-template-content"><!-- rendered by JS --></div>
+    </div>
+
+    <!-- TAB 2: GAP ANALYSIS -->
+    <div id="tpl-panel-gaps" style="display:none;padding:24px;">
+      <div style="font-size:14px;color:#0F2044;margin-bottom:16px;line-height:1.5;font-weight:500;">
+        The Template Engine has mapped <strong style="color:#0055A5;">Small Bank Luxembourg's</strong> existing AML programme against the national template.
+        Click any section below for detailed gap guidance.
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+        <span class="status-badge badge-green">✓ 7 complete</span>
+        <span class="status-badge badge-amber">◑ 3 partial</span>
+        <span class="status-badge badge-red">✗ 2 missing</span>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#3A5070;font-weight:600;margin-bottom:6px;">
+          <span>Overall coverage vs national template</span>
+          <span id="coverage-pct2" style="color:#0055A5;font-weight:700;">78%</span>
+        </div>
+        <div class="progress-bar" style="height:10px;">
+          <div class="progress-fill" id="coverage-bar2" style="width:78%;background:linear-gradient(90deg,#0055A5,#00A3E0);"></div>
+        </div>
+      </div>
+      <div id="gap-sections-list"><!-- rendered by JS --></div>
+      <div id="gap-detail-box" style="display:none;margin-top:16px;"></div>
+    </div>
+
+    <!-- TAB 3: CROSS-BANK COMPARISON -->
+    <div id="tpl-panel-compare" style="display:none;padding:24px;">
+      <div style="font-size:14px;color:#0F2044;margin-bottom:16px;line-height:1.5;font-weight:500;">
+        CSSF view: all 4 pilot banks mapped to the same template. Coverage scores visible at a glance —
+        <strong style="color:#0055A5;">something that was impossible before LuxAML Fabric.</strong>
+      </div>
+      <div id="compare-table"><!-- rendered by JS --></div>
+      <div class="alert-box alert-green" style="margin-top:16px;">
+        <div class="alert-title">✓ What this gives CSSF</div>
+        For the first time, CSSF can compare AML programme quality across all banks — same 12 sections, same scoring, same evidence standard. Supervision shifts from document review to data-driven oversight.
+      </div>
+    </div>
+
+  </div><!-- end white card wrapper -->
+
+  <div class="key-insight" style="margin-top:0;margin-bottom:24px;">
+    <strong>Why this matters:</strong> Luxembourg has never had a standard AML programme structure. Every bank invents its own — making supervision almost impossible. The Template Engine produces a <strong>real, usable national document</strong> that any bank can fill in, any auditor can review, and any regulator can compare. One standard. Every institution. For the first time.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     ENGINE 3 — MAPPING ENGINE
+══════════════════════════════════════════════ -->
+<div class="engine-panel" id="engine-3">
+  <div class="scenario-header">
+    <div>
+      <div class="scenario-tag tag-e3">Engine 3 — Mapping Engine</div>
+      <h2>Small Bank (part of an international banking group) faces a cross-border compliance conflict</h2>
+      <p>The Small Bank must follow both its Group HQ Group's global AML policy AND CSSF's local rules. But the group policy is confidential — it cannot leave Paris. Watch how the Mapping Engine solves this.</p>
+    </div>
+    <div class="scenario-meta">
+      <span class="meta-chip">Bank: Small Bank/Group HQ</span>
+      <span class="meta-chip">Problem: Cross-border rules</span>
+      <span class="meta-chip">Solution: Mapping Declaration</span>
+    </div>
+  </div>
+
+  <div class="insight-bar">
+    <div class="insight-item i-red">
+      <div class="insight-val">0 pages</div>
+      <div class="insight-lbl">Group policy that can<br>legally cross the border</div>
+    </div>
+    <div class="insight-item i-purple">
+      <div class="insight-val">1 doc</div>
+      <div class="insight-lbl">Mapping Declaration replaces<br>the full group policy</div>
+    </div>
+    <div class="insight-item i-green">
+      <div class="insight-val">100%</div>
+      <div class="insight-lbl">CSSF visibility maintained<br>no data privacy risk</div>
+    </div>
+  </div>
+
+  <div class="split-panel">
+    <div class="panel panel-before">
+      <div class="panel-label">Before — the cross-border problem</div>
+      <div class="person-bubble">
+        <div class="avatar av-hq">HQ</div>
+        <div class="speech">
+          <div class="speech-name">BNP Paribas HQ — Paris</div>
+          "Our group AML policy is 200 pages. It is confidential. Do NOT share it outside France. All subsidiaries must follow it."
+        </div>
+      </div>
+      <div class="arrow-down">↓</div>
+      <div class="person-bubble">
+        <div class="avatar av-bank">SB</div>
+        <div class="speech">
+          <div class="speech-name">Sarah — Small Bank Luxembourg</div>
+          "CSSF is asking for our AML framework including group policies. But I cannot send the group document. What do I do?"
+        </div>
+      </div>
+      <div class="arrow-down">↓</div>
+      <div class="person-bubble">
+        <div class="avatar av-reg">MC</div>
+        <div class="speech">
+          <div class="speech-name">CSSF Inspector</div>
+          "I cannot verify compliance without seeing how group policies interact with Luxembourg rules. This is a supervision blind spot."
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="alert-box alert-red">
+          <div class="alert-title">⚠ Deadlock</div>
+          Group policy cannot cross borders. CSSF cannot supervise. Bank is stuck.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-after">
+      <div class="panel-label">After — Mapping Declaration solves it</div>
+      <div class="person-bubble">
+        <div class="avatar av-ai">AI</div>
+        <div class="speech">
+          <div class="speech-name">Mapping Engine — LuxAML Fabric</div>
+          "Mapping Declaration generated. Shows which group rules apply, which are adapted, which are overridden by CSSF. Group document stays in Paris."
+        </div>
+      </div>
+      <div class="arrow-down">↓</div>
+      <div id="mapping-output">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE DEMO -->
+  <div class="demo-area">
+    <div class="section-title">Live Demo — Generate Mapping Declaration for Small Bank</div>
+    <p style="font-size:13px;color:#3A5070;margin-bottom:16px;">The Mapping Engine analyses BNP Paribas Group policies against CSSF requirements and generates a declaration — without ever ingesting the confidential group document.</p>
+
+    <div class="demo-controls">
+      <button class="demo-btn" style="background:#5A30A0;color:#FFFFFF;font-weight:500" onclick="runMapping()">▶ Generate Mapping Declaration</button>
+      <button class="demo-btn btn-ghost" onclick="resetMapping()">↺ Reset</button>
+    </div>
+
+    <div style="margin-bottom:10px">
+      <div class="step-row" id="map-steps">
+        <div class="step-item" id="ms1"></div>
+        <div class="step-item" id="ms2"></div>
+        <div class="step-item" id="ms3"></div>
+        <div class="step-item" id="ms4"></div>
+        <span class="step-label" id="map-step-label">Ready</span>
+      </div>
+    </div>
+
+    <div class="demo-output" id="mapping-demo-output">
+      <span style="color:#7A90AA;font-weight:500">→ Click "Generate Mapping Declaration" to begin…</span>
+    </div>
+  </div>
+
+  <div class="key-insight">
+    <strong>Why this matters for the stakeholders:</strong> Multinational banks in Luxembourg are caught between group confidentiality and local regulatory transparency. The Mapping Engine solves this elegantly — <strong>the group document never moves</strong>, but CSSF gets full visibility into how group and local rules interact. A declaration replaces a document.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     ENGINE 4 — DUAL OUTPUT ENGINE
+══════════════════════════════════════════════ -->
+<div class="engine-panel" id="engine-4">
+  <div class="scenario-header">
+    <div>
+      <div class="scenario-tag tag-e4">Engine 4 — Dual Output Engine</div>
+      <h2>Small Bank detects suspicious cash activity — files STR and gets private feedback</h2>
+      <p>The bank detects a suspicious pattern: a client has made three cash deposits totalling €42,000 in one week. When they file the STR to CRF, the Dual Output Engine adds governance context for the regulator AND sends a private improvement report only to the bank.</p>
+    </div>
+    <div class="scenario-meta">
+      <span class="meta-chip">Pilot: Small Bank Luxembourg</span>
+      <span class="meta-chip">Event: STR Filing</span>
+      <span class="meta-chip">Recipients: CRF + Small Bank</span>
+    </div>
+  </div>
+
+  <div class="insight-bar">
+    <div class="insight-item i-red">
+      <div class="insight-val">0 context</div>
+      <div class="insight-lbl">CRF receives STRs with<br>no governance information</div>
+    </div>
+    <div class="insight-item i-amber">
+      <div class="insight-val">2 outputs</div>
+      <div class="insight-lbl">One STR filing generates<br>two separate outputs</div>
+    </div>
+    <div class="insight-item i-green">
+      <div class="insight-val">Private</div>
+      <div class="insight-lbl">Bank gaps never shared<br>with CSSF — safe to improve</div>
+    </div>
+  </div>
+
+  <div class="split-panel">
+    <div class="panel panel-before">
+      <div class="panel-label">Before — STR filed, everyone blind</div>
+      <div class="person-bubble">
+        <div class="avatar av-bank">SB</div>
+        <div class="speech">
+          <div class="speech-name">Sarah — Small Bank AML Officer</div>
+          "We've detected a suspicious payment. €45,000 to an unknown account in a high-risk jurisdiction. Filing STR now."
+        </div>
+      </div>
+      <div class="arrow-down">↓</div>
+      <div class="str-form">
+        <div class="form-field">
+          <div class="form-label">Transaction amount</div>
+          <div class="form-value">€42,000 (3 × cash deposits in 7 days)</div>
+        </div>
+        <div class="form-field">
+          <div class="form-label">Destination</div>
+          <div class="form-value">Cash deposits — client declared income inconsistent</div>
+        </div>
+        <div class="form-field" style="margin-bottom:0">
+          <div class="form-label">Attached context</div>
+          <div class="form-value" style="color:#C42030">None — transaction details only</div>
+        </div>
+      </div>
+      <div class="person-bubble">
+        <div class="avatar av-crf">CR</div>
+        <div class="speech">
+          <div class="speech-name">CRF Investigator</div>
+          "STR received. But is this bank's AML programme even current? Is this a genuine detection or a fluke? I have no context."
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="alert-box alert-red">
+          <div class="alert-title">⚠ Both parties lose</div>
+          CRF cannot prioritise cases. Small Bank doesn't know if its controls work.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-after">
+      <div class="panel-label">After — one filing, two intelligent outputs</div>
+      <div class="person-bubble">
+        <div class="avatar av-ai">AI</div>
+        <div class="speech">
+          <div class="speech-name">Dual Output Engine — LuxAML Fabric</div>
+          "STR processed. Generating Output A for CRF (governance context) and Output B for Small Bank (private gap report). No personal data included."
+        </div>
+      </div>
+      <div class="arrow-down">↓</div>
+      <div class="output-card output-crf">
+        <div class="output-title">📤 Output A — Sent to CRF (Financial Intelligence Unit)</div>
+        <div class="drift-indicator drift-green">
+          <div class="drift-dot"></div>
+          <div><div class="drift-label">Programme status: Green ✓</div>
+          <div class="drift-detail">AML programme current · Last updated 12 days ago</div></div>
+        </div>
+        <div class="doc-item doc-blue" style="margin-top:6px">
+          <div class="doc-content">
+            <div class="doc-title">Programme hash</div>
+            <div class="doc-meta hash-display">sha256:a4f2c8e1b9d3...7f41</div>
+          </div>
+        </div>
+        <div class="doc-item doc-blue">
+          <div class="doc-content">
+            <div class="doc-title">Regulatory version</div>
+            <div class="doc-meta">Aligned to CSSF 2024/847 · EU AMLR Art.19 · FATF R.20</div>
+          </div>
+        </div>
+        <div class="doc-item doc-blue" style="margin-bottom:0">
+          <div class="doc-content">
+            <div class="doc-title">Attestation</div>
+            <div class="doc-meta">AML Officer + Board Director · 2026-05-04 09:14:22</div>
+          </div>
+        </div>
+      </div>
+      <div class="output-card output-bank">
+        <div class="output-title">📥 Output B — Sent privately to Small Bank only</div>
+        <div class="doc-item doc-teal">
+          <div class="doc-icon">⚠️</div>
+          <div class="doc-content">
+            <div class="doc-title">Gap detected: Section 4.3</div>
+            <div class="doc-meta">STR filing deadline procedure not updated to 3-day rule</div>
+          </div>
+        </div>
+        <div class="doc-item doc-teal" style="margin-bottom:0">
+          <div class="doc-icon">ℹ️</div>
+          <div class="doc-content">
+            <div class="doc-title">Suggestion: Update risk matrix</div>
+            <div class="doc-meta">High-risk jurisdiction list last reviewed 8 months ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE DEMO -->
+  <div class="demo-area">
+    <div class="section-title">Live Demo — File an STR and watch the engine generate both outputs</div>
+    <p style="font-size:13px;color:#3A5070;margin-bottom:16px;">Simulate Small Bank detecting a suspicious transaction. The engine processes it and generates two completely separate outputs in real time.</p>
+
+    <div class="demo-controls">
+      <button class="demo-btn btn-amber" onclick="runDualOutput('wire')">▶ Simulate: Suspicious wire transfer to high-risk country</button>
+      <button class="demo-btn btn-ghost" onclick="runDualOutput('crypto')">▶ Simulate: Structuring — split cash deposits pattern</button>
+      <button class="demo-btn btn-ghost" onclick="runDualOutput('cash')">▶ Simulate: Structuring — split cash deposits</button>
+    </div>
+
+    <div style="margin-bottom:10px">
+      <div class="step-row" id="dual-steps">
+        <div class="step-item" id="ds1"></div>
+        <div class="step-item" id="ds2"></div>
+        <div class="step-item" id="ds3"></div>
+        <div class="step-item" id="ds4"></div>
+        <div class="step-item" id="ds5"></div>
+        <div class="step-item" id="ds6"></div>
+        <span class="step-label" id="dual-step-label">Ready</span>
+      </div>
+    </div>
+
+    <div class="demo-output" id="dual-output">
+      <span style="color:#7A90AA;font-weight:500">→ Select a transaction type above to simulate the Dual Output Engine…</span>
+    </div>
+  </div>
+
+  <div class="key-insight">
+    <strong>Why this matters for the stakeholders:</strong> Today CRF receives STRs with zero context about the filing institution's governance quality. The Dual Output Engine adds a governance "passport" to every report — <strong>CRF can now prioritise and contextualise cases</strong>. At the same time, Small Bank receives private improvement suggestions. One engine, two entirely different beneficiaries.
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ─── FOOTER ─── -->
+<div class="footer">
+  <span><strong>LuxAML Fabric</strong> — LuxAML Fabric Demo for Platform Demo</span>
+  <span>Luxembourg · 2026 · <strong>No personal data processed</strong> · Metadata only</span>
+</div>
+
+<script>
+/* ─── ENGINE TAB SWITCHING ─── */
+function switchEngine(n) {
+  document.querySelectorAll('.engine-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.engine-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('engine-' + n).classList.add('active');
+  document.querySelectorAll('.engine-tab')[n-1].classList.add('active');
+
+  if (n === 2) initTemplate();
+  if (n === 3) initMapping();
+}
+
+/* ══════════════════════════
+   ENGINE 1 — RAC
+══════════════════════════ */
+const racScenarios = {
+  crypto: {
+    name: 'CSSF Circular 2024/569 — Enhanced Due Diligence Update',
+    steps: ['Ingesting circular PDF…', 'Parsing regulatory obligations…', 'Comparing to Small Bank AML Programme v4.1…', 'Identifying gaps…', 'Generating alerts…'],
+    results: [
+      { id:'RULE-569-B2.1', type:'NEW', status:'gap', title:'Source-of-funds documentation mandatory above €15,000', action:'Update Section 3.4 — add source-of-funds checklist', urgency:'High' },
+      { id:'RULE-847-D1.5', type:'UPDATED', status:'gap', title:'STR filing: 5 days → 3 days', action:'Update Section 4.3 — revise deadline', urgency:'High' },
+      { id:'RULE-569-D2.0', type:'NEW', status:'gap', title:'Annual re-verification required for all high-risk clients', action:'Add client re-verification schedule to Section 4.6', urgency:'Medium' },
+      { id:'RULE-847-A2.1', type:'UNCHANGED', status:'ok', title:'KYC onboarding requirements', action:'No action required', urgency:'None' },
+      { id:'RULE-847-B1.3', type:'UNCHANGED', status:'ok', title:'PEP screening frequency', action:'No action required — Small Bank already compliant', urgency:'None' },
+    ]
+  },
+  fatf: {
+    name: 'FATF Recommendation Update 2024 — Beneficial Ownership',
+    steps: ['Fetching FATF document…', 'Extracting Recommendation 24…', 'Cross-referencing EU transposition…', 'Checking Small Bank controls…', 'Finalising report…'],
+    results: [
+      { id:'FATF-R24-1', type:'UPDATED', status:'gap', title:'Beneficial ownership verification depth: 2 → 3 layers', action:'Update risk assessment methodology — Section 3.1', urgency:'High' },
+      { id:'FATF-R24-2', type:'NEW', status:'gap', title:'Nominee shareholder flag required', action:'Add nominee flag to onboarding form — Section 2.4', urgency:'Medium' },
+      { id:'FATF-R25-1', type:'UNCHANGED', status:'ok', title:'Trust and company service provider monitoring', action:'Bank compliant — no change', urgency:'None' },
+    ]
+  },
+  aml: {
+    name: 'EU AMLR Article 19 — Customer Risk Scoring',
+    steps: ['Loading EU AMLR text…', 'Parsing Article 19 obligations…', 'Mapping to Small Bank risk model…', 'Detecting divergence…', 'Output ready…'],
+    results: [
+      { id:'AMLR-A19-1', type:'NEW', status:'gap', title:'Mandatory risk score documentation for all clients', action:'Implement risk scoring log — Section 3.3', urgency:'High' },
+      { id:'AMLR-A19-2', type:'UPDATED', status:'gap', title:'Annual review of high-risk clients (was: 18 months)', action:'Update review cadence in Section 6.1', urgency:'Medium' },
+      { id:'AMLR-A19-3', type:'UNCHANGED', status:'ok', title:'Enhanced monitoring for politically exposed persons', action:'Bank already compliant', urgency:'None' },
+      { id:'AMLR-A19-4', type:'UNCHANGED', status:'ok', title:'Transaction monitoring threshold documentation', action:'No change required', urgency:'None' },
+    ]
+  }
+};
+
+function runRAC(type) {
+  const scenario = racScenarios[type];
+  const steps = ['rs1','rs2','rs3','rs4','rs5'];
+  const out = document.getElementById('rac-output');
+  const lbl = document.getElementById('rac-step-label');
+  steps.forEach(s => { document.getElementById(s).className = 'step-item'; });
+  out.innerHTML = `<span style="color:#2C4A6E">🔄 Processing: <strong style="color:#FFFFFF">${scenario.name}</strong></span>`;
+  let i = 0;
+  function nextStep() {
+    if (i < steps.length) {
+      document.getElementById(steps[i]).className = 'step-item done';
+      lbl.textContent = scenario.steps[i];
+      i++;
+      setTimeout(nextStep, 420);
+    } else {
+      lbl.textContent = '✓ Complete';
+      renderRACResults(scenario.results, out);
+    }
+  }
+  nextStep();
+}
+
+function renderRACResults(results, out) {
+  const gaps = results.filter(r => r.status === 'gap');
+  const ok   = results.filter(r => r.status === 'ok');
+  let html = `<div class="slide-in" style="margin-bottom:12px;">
+    <span class="status-badge badge-red" style="margin-right:6px">⚠ ${gaps.length} gaps found</span>
+    <span class="status-badge badge-green">${ok.length} rules compliant</span>
+  </div>`;
+  results.forEach(r => {
+    const isGap = r.status === 'gap';
+    html += `<div class="rule-card slide-in" style="color:#0F2044" style="${isGap ? 'border-left-color:#C42030' : 'border-left-color:#1A7A40'}">
+      <div class="rule-id">${r.id} · ${r.type}</div>
+      <div class="rule-text">${r.title}</div>
+      <div style="font-size:11px;color:#3A5070;font-weight:500;margin-bottom:6px;">\${r.action}</div>
+      <div class="rule-meta">
+        <span class="status-badge ${isGap ? 'badge-red' : 'badge-green'}">${isGap ? 'Gap in programme' : 'Compliant'}</span>
+        ${r.urgency !== 'None' ? `<span class="status-badge badge-amber">Urgency: ${r.urgency}</span>` : '<span class="status-badge badge-blue">No action needed</span>'}
+      </div>
+    </div>`;
+  });
+  out.innerHTML = html;
+}
+
+/* ══════════════════════════
+   ENGINE 2 — TEMPLATE (FULL)
+══════════════════════════ */
+
+const nationalTemplate = [
+  {
+    num:'01', title:'Governance & Accountability',
+    sub:'MLCO appointment, Board responsibilities, escalation lines',
+    regulatory:'CSSF Circular 12/552 · EU AMLR Art.8 · FATF R.18',
+    guidance:'Every institution must appoint a qualified Money Laundering Compliance Officer (MLCO). The Board bears ultimate responsibility. This section must document the full accountability chain.',
+    required:[
+      'Name, title and qualifications of appointed MLCO',
+      'Date of MLCO appointment and CSSF notification reference',
+      'Board resolution confirming AML oversight responsibility',
+      'Escalation procedure: MLCO → Board → CSSF (if required)',
+      'Deputy MLCO or backup governance arrangement',
+      'Annual Board AML report schedule and sign-off process'
+    ],
+    template:'1.1 MLCO Appointment\n[ BANK TO COMPLETE: Full name, title, appointment date, CSSF notification ref ]\n\n1.2 Board Responsibility\n[ BANK TO COMPLETE: Board resolution date, named Board member responsible ]\n\n1.3 Escalation Procedure\n[ BANK TO COMPLETE: Step-by-step escalation path with named roles ]\n\n1.4 Governance Review\nThis section is reviewed and re-approved annually by the Board. Next review: [ DATE ]'
+  },
+  {
+    num:'02', title:'Risk Assessment Methodology',
+    sub:'Client, product, geographic, channel risk scoring model',
+    regulatory:'CSSF Circular 20/747 · EU AMLR Art.10 · Luxembourg NRA 2023',
+    guidance:'The institution must operate a documented, risk-based approach. Risk must be assessed across four dimensions: client type, product/service, geographic origin, and delivery channel. Scores must be updated at least annually.',
+    required:[
+      'Risk scoring model — documented methodology for each dimension',
+      'Client risk categories: Low / Medium / High / Very High with criteria',
+      'Product risk matrix: all products/services rated with rationale',
+      'Geographic risk list: reference to Luxembourg NRA and FATF high-risk list',
+      'Channel risk assessment: digital, face-to-face, intermediary, API',
+      'Annual risk assessment review date and sign-off'
+    ],
+    template:'2.1 Risk Scoring Framework\n[ BANK TO COMPLETE: Describe your scoring model — points-based, category-based, or hybrid ]\n\n2.2 Client Risk Categories\nLow risk: [ BANK TO COMPLETE — criteria ]\nMedium risk: [ BANK TO COMPLETE ]\nHigh risk: [ BANK TO COMPLETE ]\nVery High risk: [ BANK TO COMPLETE ]\n\n2.3 Product Risk Matrix\n[ BANK TO COMPLETE: List all products with risk rating and rationale ]\n\n2.4 Geographic Risk List\nReference: Luxembourg NRA 2023 + FATF High-Risk list (updated quarterly)\n[ BANK TO COMPLETE: Add institution-specific geographic risk overlays ]\n\n2.5 Channel Risk\n[ BANK TO COMPLETE: Risk rating per channel ]\n\n2.6 Annual Review\nLast reviewed: [ DATE ] · Next review: [ DATE ] · Approved by: [ NAME ]'
+  },
+  {
+    num:'03', title:'Customer Due Diligence (CDD)',
+    sub:'Onboarding, identity verification, beneficial ownership, source of funds',
+    regulatory:'CSSF Circular 22/819 · EU AMLR Art.16-18 · FATF R.10 · R.24',
+    guidance:'CDD must be performed for all new clients before establishing a business relationship. Ongoing CDD applies to existing clients. This section documents all verification steps, evidence requirements, and record standards.',
+    required:[
+      'Onboarding checklist: identity documents accepted, verification process',
+      'Beneficial ownership procedure: minimum 2-layer verification (3-layer per FATF R.24)',
+      'Nominee shareholder identification and flag process',
+      'Source of funds documentation requirements by client segment',
+      'Ongoing CDD: trigger events for re-verification',
+      'Simplified CDD criteria (low-risk clients)',
+      'CDD refusal and exit procedure'
+    ],
+    template:'3.1 Onboarding Verification\nAccepted identity documents: [ BANK TO COMPLETE ]\nVerification process: [ BANK TO COMPLETE — face-to-face / digital / third-party ]\n\n3.2 Beneficial Ownership\nMinimum layers verified: 3 (per FATF R.24)\n[ BANK TO COMPLETE: Describe your BO verification process and documentation ]\n\n3.3 Nominee Shareholder Flag\n[ BANK TO COMPLETE: How nominees are identified and flagged in your system ]\n\n3.4 Source of Funds\nRequired for: High-risk clients / Transactions above €15,000 / Wire transfers\n[ BANK TO COMPLETE: Documentation checklist ]\n\n3.5 Ongoing CDD Triggers\n[ BANK TO COMPLETE: Events that trigger re-verification ]\n\n3.6 CDD Refusal\n[ BANK TO COMPLETE: Process for declining onboarding or exiting a relationship ]'
+  },
+  {
+    num:'04', title:'Enhanced Due Diligence (EDD)',
+    sub:'High-risk clients, PEPs, HNWIs, non-resident clients, cash-intensive businesses',
+    regulatory:'CSSF Circular 2024/847 · EU AMLR Art.22-25 · FATF R.12',
+    guidance:'EDD applies to all high-risk clients and specific categories defined by CSSF. PEP screening must be continuous. Non-resident clients and cash-intensive businesses require enhanced source-of-funds documentation. This section must cover all EDD triggers and the enhanced process for each.',
+    required:[
+      'EDD trigger list: all categories requiring enhanced measures',
+      'PEP identification process: screening tool, frequency, escalation',
+      'HNWI EDD process: source of wealth documentation',
+      'Non-resident client EDD: enhanced identity verification and source-of-funds',
+      'EDD approval process: who approves high-risk onboarding',
+      'EDD review frequency: minimum annual for high-risk, 6-monthly for very high'
+    ],
+    template:'4.1 EDD Trigger Categories\n[ BANK TO COMPLETE: List all categories that trigger EDD at your institution ]\n\n4.2 PEP Screening\nScreening tool used: [ BANK TO COMPLETE ]\nScreening frequency: Continuous (real-time alerts) + Manual review [ FREQUENCY ]\nEscalation for PEP match: MLCO → Board Director\n[ BANK TO COMPLETE: Name of escalation contact ]\n\n4.3 HNWI Enhanced Process\n[ BANK TO COMPLETE: Source of wealth documentation requirements ]\n\n4.4 Non-Resident & Cash-Intensive Client EDD\nApplicable to: Non-resident clients + businesses with high cash turnover\nRequired: Source of funds documentation + business purpose statement\n[ BANK TO COMPLETE: Your non-resident EDD process ]\n\n4.5 EDD Approval\n[ BANK TO COMPLETE: Named approver for high-risk client onboarding ]\n\n4.6 EDD Review Schedule\n[ BANK TO COMPLETE: Review frequency by risk tier ]'
+  },
+  {
+    num:'05', title:'Transaction Monitoring',
+    sub:'Rules, thresholds, alert handling, escalation, structuring detection',
+    regulatory:'CSSF Circular 22/819 · EU AMLR Art.26 · FATF R.20',
+    guidance:'Transaction monitoring must be systematic and risk-based. Monitoring rules must be documented. Alert handling must follow a defined process. Structuring detection (splitting transactions to avoid reporting thresholds) is a key risk for small banks.',
+    required:[
+      'Monitoring system name and vendor',
+      'Rule set documentation: each rule, threshold, and rationale',
+      'Structuring detection rules: multiple cash deposits just below €10,000 threshold',
+      'Alert handling process: L1 review → L2 escalation → MLCO decision',
+      'Alert closure standards: what justifies closing without STR',
+      'False positive rate tracking and annual tuning review',
+      'Escalation timelines: L1 to L2 within 24h, L2 to MLCO within 48h'
+    ],
+    template:'5.1 Monitoring System\nSystem used: [ BANK TO COMPLETE — e.g. Actimize, Oracle FCCM, in-house ]\nVendor: [ BANK TO COMPLETE ]\n\n5.2 Rule Set Summary\n[ BANK TO COMPLETE: Table of rules with threshold, trigger logic, and risk rationale ]\n\n5.3 Structuring Detection\nRule: Flag cumulative cash deposits within 5 days exceeding €9,500 from one source\nRule: Flag same-day split transactions across multiple accounts\n[ BANK TO COMPLETE: Describe your structuring detection logic ]\n\n5.4 Alert Handling Process\nL1 Analyst: initial review within 24 hours\nL2 Senior AML: escalation decision within 48 hours\nMLCO: STR/no-STR decision within [ BANK TO COMPLETE ] hours\n\n5.5 Alert Closure Standards\n[ BANK TO COMPLETE: Criteria for closing an alert without STR ]\n\n5.6 Annual Tuning Review\n[ BANK TO COMPLETE: Last review date, methodology, outcomes ]'
+  },
+  {
+    num:'06', title:'Suspicious Transaction Reporting (STR)',
+    sub:'Detection, internal escalation, CRF filing, 3-day deadline',
+    regulatory:'CSSF Circular 2024/847 · Law of 12 Nov 2004 · CRF Guidelines',
+    guidance:'Every institution must have a clear, documented STR process. Since CSSF Circular 2024/847, the filing deadline has been reduced to 3 business days (previously 5 days). Staff must know what triggers an STR and how to escalate.',
+    required:[
+      'STR trigger criteria: what constitutes a suspicious transaction',
+      'Internal escalation path: staff → MLCO → decision',
+      'Filing deadline: 3 business days from detection (per CSSF 2024/847)',
+      'CRF filing platform and access credentials management',
+      'STR register: record of all filed STRs with outcomes',
+      'Staff awareness: how all staff know what to report and to whom',
+      'Tipping-off prohibition: documented staff awareness'
+    ],
+    template:'6.1 STR Trigger Criteria\n[ BANK TO COMPLETE: Define what constitutes suspicious activity at your institution ]\n\n6.2 Internal Escalation\nStep 1: Staff member identifies suspicious activity → notifies [ BANK TO COMPLETE ] within [ ] hours\nStep 2: MLCO review and decision within [ BANK TO COMPLETE ] hours\nStep 3: If STR confirmed → file to CRF within 3 business days (CSSF 2024/847)\n\n6.3 Filing Deadline\nDeadline: 3 business days from detection  ← Updated per CSSF 2024/847\nPrevious deadline was 5 days — all staff must be notified\nLast staff briefing on updated deadline: [ BANK TO COMPLETE ]\n\n6.4 CRF Filing Platform\nPlatform: goAML Luxembourg\nAccess managed by: [ BANK TO COMPLETE ]\n\n6.5 STR Register\n[ BANK TO COMPLETE: Location of register, access controls, retention period ]\n\n6.6 Tipping-Off Prohibition\n[ BANK TO COMPLETE: How staff are trained on the prohibition against notifying suspects ]'
+  },
+  {
+    num:'07', title:'Sanctions Screening',
+    sub:'Automated screening, daily cadence, match handling, freeze procedure',
+    regulatory:'EU Regulation 2580/2001 · EU Regulation 881/2002 · CSSF guidelines',
+    guidance:'All clients and counterparties must be screened against EU consolidated sanctions lists. Screening must be at least daily and triggered by new client onboarding. Matches must be handled through a documented escalation process.',
+    required:[
+      'Screening tool name and vendor',
+      'Screening frequency: minimum daily + real-time at onboarding',
+      'Sanctions lists screened: EU consolidated list, UN, OFAC (if applicable)',
+      'Match handling process: true match vs false positive criteria',
+      'Account freeze procedure and CSSF notification timeline',
+      'Annual screening calibration review'
+    ],
+    template:'7.1 Screening System\nSystem: [ BANK TO COMPLETE — e.g. Fircosoft, Dow Jones, World-Check ]\nVendor: [ BANK TO COMPLETE ]\n\n7.2 Screening Frequency\nOnboarding: Real-time at all new client onboarding\nOngoing: Daily batch screening of full client base\nLast screening run: [ AUTO-POPULATED BY SYSTEM ]\n\n7.3 Lists Screened\n✓ EU Consolidated Sanctions List\n✓ UN Security Council List\n[ BANK TO COMPLETE: Additional lists ]\n\n7.4 Match Handling\nTrue match criteria: [ BANK TO COMPLETE ]\nFalse positive threshold: [ BANK TO COMPLETE ]\nEscalation: MLCO → Legal → Board (within 24h of true match)\n\n7.5 Account Freeze\n[ BANK TO COMPLETE: Freeze process and CSSF notification timeline ]\n\n7.6 Annual Calibration\n[ BANK TO COMPLETE: Last calibration date and outcomes ]'
+  },
+  {
+    num:'08', title:'Training & Awareness',
+    sub:'Annual AML training, new joiner training, role-specific content, records',
+    regulatory:'CSSF Circular 12/552 · EU AMLR Art.9 · FATF R.18',
+    guidance:'All staff must receive AML training appropriate to their role. The MLCO must receive specialist training. Training records must be maintained. New joiners must be trained before independent client contact.',
+    required:[
+      'Annual training: content, delivery method, completion tracking',
+      'New joiner training: timeline before independent client contact',
+      'MLCO specialist training: annual CPD requirement',
+      'Role-specific training: front office / back office / management',
+      'Training records: format, retention period, audit accessibility',
+      'Training refresh triggers: regulatory change, new product, near-miss event'
+    ],
+    template:'8.1 Annual Training Programme\nContent: [ BANK TO COMPLETE — topics covered ]\nDelivery: [ BANK TO COMPLETE — e-learning / classroom / both ]\nCompletion target: 100% of staff by [ DATE ] each year\nTracking: [ BANK TO COMPLETE — LMS or manual records ]\n\n8.2 New Joiner Training\nTimeline: Completed before first independent client contact\nContent: [ BANK TO COMPLETE ]\nSign-off required by: [ BANK TO COMPLETE ]\n\n8.3 MLCO Specialist Training\nMinimum CPD hours per year: [ BANK TO COMPLETE ]\nLast completed: [ DATE ]\n\n8.4 Role-Specific Content\nFront office: [ BANK TO COMPLETE — red flags, STR triggers ]\nBack office: [ BANK TO COMPLETE — record keeping, sanctions ]\nManagement: [ BANK TO COMPLETE — governance, accountability ]\n\n8.5 Training Records\nRetention: 5 years minimum\nLocation: [ BANK TO COMPLETE ]\nAudit access: [ BANK TO COMPLETE ]'
+  },
+  {
+    num:'09', title:'Record Keeping',
+    sub:'Retention periods, data format, access controls, GDPR alignment',
+    regulatory:'Law of 12 Nov 2004 Art.40 · GDPR · CSSF Circular 12/552',
+    guidance:'All CDD documents, transaction records, STRs and training records must be retained for minimum 5 years (10 years for some records). Records must be retrievable within reasonable time for supervisory access.',
+    required:[
+      'Retention schedule: category by category with duration',
+      'Storage format: physical, digital, or hybrid',
+      'Access controls: who can access AML records',
+      'GDPR alignment: data minimisation and purpose limitation',
+      'Retrieval timeline: maximum time to produce records for CSSF',
+      'Destruction procedure: secure deletion after retention period'
+    ],
+    template:'9.1 Retention Schedule\nCDD documents: 5 years after end of relationship\nTransaction records: 5 years from date of transaction\nSTR copies: 5 years from filing date\nTraining records: 5 years\n[ BANK TO COMPLETE: Any longer periods required by product type ]\n\n9.2 Storage Format\n[ BANK TO COMPLETE: Digital / Physical / Hybrid — system name ]\n\n9.3 Access Controls\nAuthorised access: [ BANK TO COMPLETE — named roles ]\nSupervisory access: Records available to CSSF within [ BANK TO COMPLETE ] business days\n\n9.4 GDPR Alignment\nData minimisation: [ BANK TO COMPLETE — how you ensure only necessary data is held ]\nRetention review: Annual purge of expired records\n\n9.5 Destruction Procedure\n[ BANK TO COMPLETE: Secure deletion process and log ]'
+  },
+  {
+    num:'10', title:'Internal Controls & Independent Testing',
+    sub:'Control testing, audit schedule, findings log, continuous monitoring',
+    regulatory:'CSSF Circular 12/552 · EU AMLR Art.8 · FATF R.18',
+    guidance:'The institution must operate a three-line-of-defence model. AML controls must be tested independently at least annually. Audit findings must be logged and tracked to resolution. This section documents the assurance framework.',
+    required:[
+      'Three-lines-of-defence model: roles documented',
+      'Annual AML control testing schedule',
+      'Independent audit: internal or external, scope, frequency',
+      'Findings log: open findings, responsible owner, target closure date',
+      'Management reporting: frequency, recipients, format',
+      'Continuous monitoring indicators (where implemented)'
+    ],
+    template:'10.1 Three Lines of Defence\nFirst line: [ BANK TO COMPLETE — business line AML controls ]\nSecond line: MLCO and AML team — oversight and policy\nThird line: Internal Audit — independent testing\n\n10.2 AML Control Testing\nFrequency: Annual minimum\nScope: [ BANK TO COMPLETE — sections tested each cycle ]\nResponsible: [ BANK TO COMPLETE ]\n\n10.3 Independent Audit\nType: [ BANK TO COMPLETE — internal / external ]\nLast audit: [ DATE ]\nNext audit: [ DATE ]\nScope summary: [ BANK TO COMPLETE ]\n\n10.4 Findings Log\n[ BANK TO COMPLETE: Format of findings log — tool used, update frequency ]\nCurrent open findings: [ NUMBER ] as of [ DATE ]\n\n10.5 Management Reporting\nFrequency: [ BANK TO COMPLETE ]\nRecipients: MLCO, Board AML Committee\nFormat: [ BANK TO COMPLETE ]'
+  },
+  {
+    num:'11', title:'Group-to-Local Alignment (Mapping Declaration)',
+    sub:'Group policy applicability, CSSF overrides, local governance responsibilities',
+    regulatory:'CSSF Circular 12/552 s.25 · EU AMLR Art.14 · LuxAML Fabric Engine 3',
+    guidance:'For institutions that are part of an international group, this section documents how group AML policies apply locally. The Mapping Declaration (generated by LuxAML Fabric Engine 3) replaces the need to share confidential group documents. CSSF gets full visibility without cross-border data transfer.',
+    required:[
+      'Mapping Declaration reference number (generated by LuxAML Fabric)',
+      'Group policies that apply directly in Luxembourg — listed by policy ID',
+      'Group policies that are adapted for Luxembourg — with adaptation rationale',
+      'Group policies that are overridden by CSSF rules — with CSSF reference',
+      'Local governance responsibilities that go beyond group requirements',
+      'Annual review of Mapping Declaration'
+    ],
+    template:'11.1 Mapping Declaration\nDeclaration reference: [ AUTO-GENERATED BY LuxAML FABRIC ENGINE 3 ]\nGeneration date: [ AUTO-POPULATED ]\nBlockchain hash: [ AUTO-POPULATED ]\n\n11.2 Group Policies — Applied Directly\n[ BANK TO COMPLETE: List group policy IDs that apply without modification ]\n\n11.3 Group Policies — Adapted for Luxembourg\nPolicy ID | Adaptation | Rationale\n[ BANK TO COMPLETE using LuxAML Fabric mapping output ]\n\n11.4 Group Policies — Overridden by CSSF\nPolicy ID | CSSF Rule | Reason for override\n[ BANK TO COMPLETE using LuxAML Fabric mapping output ]\n\n11.5 Local-Only Obligations\n[ BANK TO COMPLETE: Obligations that exist under CSSF rules but not in group policy ]\n\n11.6 Annual Review\nLast reviewed: [ DATE ] · Next review: [ DATE ] · Approved by: [ NAME ]'
+  },
+  {
+    num:'12', title:'AMLA Readiness & Future-Proofing',
+    sub:'EU AMLR transposition, AMLA interoperability, national maturity indicators',
+    regulatory:'EU AMLR 2024 · AMLA Regulation · LuxAML Fabric Maturity Dashboard',
+    guidance:'The EU Anti-Money Laundering Authority (AMLA) will become operational and begin direct supervision of selected institutions. This section documents the institution\'s readiness for AMLA requirements and alignment with EU AMLR. LuxAML Fabric provides the maturity dashboard referenced here.',
+    required:[
+      'EU AMLR gap assessment: key articles and compliance status',
+      'AMLA direct supervision readiness: documentation and evidence standards',
+      'LuxAML Fabric maturity score (auto-generated from Engines 1–4)',
+      'Interoperability: how your programme connects to national AML infrastructure',
+      'Planned enhancements: timeline for closing AMLR gaps',
+      'Board sign-off on AMLA readiness roadmap'
+    ],
+    template:'12.1 EU AMLR Alignment Status\nArt. 10 (Risk assessment): [ BANK TO COMPLETE — compliant / gap / in progress ]\nArt. 16-18 (CDD): [ BANK TO COMPLETE ]\nArt. 22-25 (EDD): [ BANK TO COMPLETE ]\nArt. 26 (Transaction monitoring): [ BANK TO COMPLETE ]\n[ BANK TO COMPLETE: Remaining articles relevant to your institution ]\n\n12.2 AMLA Direct Supervision Readiness\n[ BANK TO COMPLETE: Assessment of readiness for potential AMLA direct supervision ]\n\n12.3 LuxAML Fabric Maturity Score\nOverall score: [ AUTO-GENERATED BY LuxAML FABRIC ]\nLast calculated: [ AUTO-POPULATED ]\nDashboard link: [ AUTO-POPULATED ]\n\n12.4 Enhancement Roadmap\nGap | Target date | Responsible\n[ BANK TO COMPLETE ]\n\n12.5 Board Sign-Off\nAMLA readiness roadmap approved by Board: [ DATE ]\nNext Board review: [ DATE ]'
+  }
+];
+
+const bglGapData = [
+  { num:'01', title:'Governance & Accountability',  status:'complete', coverage:100, bglStatus:'MLCO Sarah Berger appointed Jan 2023. Board resolution on file. Escalation procedure documented. Full compliance.',  action:null },
+  { num:'02', title:'Risk Assessment Methodology',  status:'complete', coverage:92,  bglStatus:'Risk model documented and updated Q3 2025. Four dimensions covered. Minor gap: mobile banking channel not separately scored.', action:'Add mobile/digital channel risk score — low priority.' },
+  { num:'03', title:'Customer Due Diligence',        status:'complete', coverage:88,  bglStatus:'CDD procedures in place and documented. Beneficial ownership: 2-layer verified. Gap: nominee shareholder flag not yet implemented (FATF R.24).', action:'Implement nominee shareholder identification flag in onboarding system.' },
+  { num:'04', title:'Enhanced Due Diligence (EDD)',  status:'partial',  coverage:61,  bglStatus:'PEP screening documented and operational (Refinitiv World-Check). HNWI process documented. GAP: No documented EDD procedure for non-resident clients — required per CSSF Circular 2024/569.',  action:'Create Section 4.4 — Non-Resident Client EDD procedure. Target: 30 days.' },
+  { num:'05', title:'Transaction Monitoring',        status:'partial',  coverage:74,  bglStatus:'Actimize monitoring system operational. Standard rules documented. Gap 1: No structuring detection rule for split cash deposits. Gap 2: Annual tuning review overdue (last done 22 months ago).',  action:'Add structuring detection rules. Schedule annual tuning review.' },
+  { num:'06', title:'STR Reporting',                 status:'partial',  coverage:58,  bglStatus:'STR process documented. goAML platform access confirmed. CRITICAL GAP: Internal procedure still references 5-day deadline. CSSF 2024/847 reduced this to 3 business days.',  action:'URGENT: Update Section 6.3 deadline to 3 business days. Brief all AML staff immediately.' },
+  { num:'07', title:'Sanctions Screening',           status:'complete', coverage:95,  bglStatus:'Fircosoft sanctions screening. Daily batch + real-time onboarding. EU and UN lists covered. Match handling procedure documented. Excellent coverage.',  action:null },
+  { num:'08', title:'Training & Awareness',          status:'complete', coverage:82,  bglStatus:'Annual e-learning in place. New joiner training confirmed. MLCO CPD tracked. Gap: no documentation that staff were briefed on CSSF 2024/569 EDD and STR deadline changes.',  action:'Issue staff briefing note on 2024/569 updates. Log completion.' },
+  { num:'09', title:'Record Keeping',                status:'complete', coverage:90,  bglStatus:'10-year retention for most records. Digital storage in OpenText. GDPR data minimisation confirmed. Access controls documented. Strong compliance.',  action:null },
+  { num:'10', title:'Internal Controls & Audit',     status:'partial',  coverage:55,  bglStatus:'Annual internal audit performed. Three-lines model described. Gaps: findings log maintained in Excel only (no formal system), 3 open findings with no target closure date set.',  action:'Formalise findings log. Assign closure dates to 3 open findings. Consider quarterly reporting.' },
+  { num:'11', title:'Group-to-Local Alignment',      status:'missing',  coverage:12,  bglStatus:'CRITICAL GAP: No Mapping Declaration exists. Small Bank references "BNP Paribas Group AML Policy" in its programme but provides no analysis of which rules apply locally, which are adapted, and which are overridden by CSSF.', action:'URGENT: Use LuxAML Fabric Engine 3 to generate Mapping Declaration. Required for CSSF audit readiness.' },
+  { num:'12', title:'AMLA Readiness',                status:'missing',  coverage:8,   bglStatus:'CRITICAL GAP: No AMLA readiness section exists. EU AMLR gap assessment not performed. AMLA direct supervision implications not assessed. This is a high-priority gap for 2026.',  action:'URGENT: Complete EU AMLR gap assessment. Use LuxAML Fabric maturity dashboard as baseline.' },
+];
+
+const compareData = [
+  { bank:'Small Bank (Pilot)',             scores:[100,92,88,61,74,58,95,82,90,55,12,8],  overall:78 },
+  { bank:'Spuerkeess',            scores:[100,85,90,75,80,72,90,88,85,70,45,20], overall:82 },
+  { bank:'Raiffeisen Lux',        scores:[95,78,82,55,68,50,88,75,80,45,8,5],   overall:69 },
+  { bank:'Société Générale Lux',  scores:[100,90,85,80,85,78,92,85,88,72,82,35], overall:85 },
+];
+
+function renderNationalTemplate() {
+  const container = document.getElementById('national-template-content');
+  if (!container) return;
+  container.innerHTML = '';
+  nationalTemplate.forEach((s, idx) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'background:#EEF3FA;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden;';
+    div.innerHTML = `
+      <div onclick="toggleTplSection(${idx})" style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .15s;"
+           onmouseover="this.style.background='#EEF4FF'" onmouseout="this.style.background=''">
+        <div style="width:28px;height:28px;border-radius:6px;background:#E8F0FC;border:1px solid rgba(0,85,165,0.25);
+             display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#003A80;flex-shrink:0;">${s.num}</div>
+        <div style="flex:1;">
+          <div style="font-weight:500;color:#0F2044;font-size:13px;">${s.title}</div>
+          <div style="font-size:11px;color:#3A5070;margin-top:2px;">${s.sub}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+          <span style="font-size:10px;color:#5A7A9A;font-family:'DM Mono',monospace;">${s.regulatory.split('·')[0].trim()}</span>
+          <span id="tpl-chevron-${idx}" style="color:#8899BB;font-size:13px;transition:transform .2s;margin-left:4px;">▼</span>
+        </div>
+      </div>
+      <div id="tpl-body-${idx}" style="display:none;padding:16px;border-top:1px solid #E8EEF8;background:#FAFCFF;">
+        <div style="margin-top:12px;margin-bottom:10px;">
+          <div style="font-size:10px;font-weight:600;color:#5A7A9A;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;">Regulatory basis</div>
+          <div style="font-size:11px;color:#0055A5;font-family:'DM Mono',monospace;">${s.regulatory}</div>
+        </div>
+        <div style="background:#EEF4FF;border:1px solid #A8C0E8;border-radius:6px;padding:11px 13px;margin-bottom:13px;font-size:12px;color:#0F2044;line-height:1.6;">
+          <strong style="color:#0055A5;font-weight:700">Guidance: </strong>${s.guidance}
+        </div>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:10px;font-weight:700;color:#3A5070;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Required content (bank must document) (every bank must document)</div>
+          ${s.required.map((r,i) => `<div style="display:flex;gap:8px;margin-bottom:5px;font-size:12px;">
+            <span style="color:#0055A5;font-size:13px;flex-shrink:0;margin-top:1px;">✦</span>
+            <span style="color:#0F2044;font-weight:500">${r}</span>
+          </div>`).join('')}
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#3A5070;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Template text (fill in the amber fields) (bank fills in the [ ] fields)</div>
+          <pre style="background:#F4F7FC;border:1px solid #D8E4F0;border-radius:6px;padding:13px;font-family:'DM Mono',monospace;font-size:11px;color:#0F2044;white-space:pre-wrap;line-height:1.8;overflow-x:auto;">${s.template.replace(/\[ BANK TO COMPLETE[^\]]*\]/g, m => `<span style="background:rgba(245,158,11,0.15);color:#B86A00;padding:1px 4px;border-radius:3px;">${m}</span>`)}</pre>
+        </div>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function toggleTplSection(idx) {
+  const body = document.getElementById('tpl-body-' + idx);
+  const chev = document.getElementById('tpl-chevron-' + idx);
+  if (!body) return;
+  const open = body.style.display === 'block';
+  body.style.display = open ? 'none' : 'block';
+  chev.style.transform = open ? '' : 'rotate(180deg)';
+}
+
+function renderGapSections() {
+  const container = document.getElementById('gap-sections-list');
+  if (!container) return;
+  container.innerHTML = '';
+  bglGapData.forEach((s, idx) => {
+    const col = s.status === 'complete' ? 'var(--green)' : s.status === 'partial' ? 'var(--amber)' : 'var(--red)';
+    const badgeClass = s.status === 'complete' ? 'badge-green' : s.status === 'partial' ? 'badge-amber' : 'badge-red';
+    const badgeText = s.status === 'complete' ? '✓ ' + s.coverage + '%' : s.status === 'partial' ? '◑ ' + s.coverage + '%' : '✗ ' + s.coverage + '%';
+    const div = document.createElement('div');
+    div.style.cssText = 'background:#EEF3FA;border:1px solid var(--border);border-left:3px solid ' + col + ';border-radius:8px;padding:10px 14px;margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .15s;';
+    div.innerHTML = `
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:#8899BB;font-weight:700;width:20px;flex-shrink:0;">${s.num}</div>
+      <div style="flex:1;">
+        <div style="font-weight:500;color:#0F2044;font-size:12px;">${s.title}</div>
+        ${s.action ? `<div style="font-size:11px;color:${s.status==='missing'?'#C42030':'#B86A00'};font-weight:600;margin-top:3px;">⚡ \${s.action}</div>` : '<div style="font-size:11px;color:#1A7A40;font-weight:600;margin-top:3px;">✓ No action required</div>'}
+      </div>
+      <span class="status-badge ${badgeClass}">${badgeText}</span>`;
+    div.onmouseover = function(){ this.style.background = '#EEF4FF'; };
+    div.onmouseout  = function(){ this.style.background = '#FFFFFF'; };
+    div.onclick = () => showGapDetail(idx);
+    container.appendChild(div);
+  });
+}
+
+function showGapDetail(idx) {
+  const s = bglGapData[idx];
+  const t = nationalTemplate[idx];
+  const box = document.getElementById('gap-detail-box');
+  box.style.display = 'block';
+  const alertType = s.status === 'complete' ? 'alert-green' : s.status === 'partial' ? 'alert-amber' : 'alert-red';
+  const statusText = s.status === 'complete' ? '✓ Compliant' : s.status === 'partial' ? '◑ Partially covered — action required' : '✗ Missing — urgent action required';
+  box.innerHTML = `<div class="slide-in" style="background:#FFFFFF;border:1px solid #D8E4F0;border-radius:10px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.08);">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div style="font-size:10px;color:#2C4A6E;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Section ${s.num} — Small Bank Coverage Detail</div>
+        <div style="font-size:15px;font-weight:500;color:#0F2044;">${s.title}</div>
+      </div>
+      <div style="font-size:28px;font-weight:800;font-family:'DM Mono',monospace;color:${s.status==='complete'?'#1A7A40':s.status==='partial'?'#B86A00':'#C42030'};">${s.coverage}%</div>
+    </div>
+    <div class="alert-box ${alertType}" style="margin-bottom:12px;">
+      <div class="alert-title">${statusText}</div>
+      ${s.bglStatus}
+    </div>
+    ${s.action ? `<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:6px;padding:10px 12px;font-size:12px;margin-bottom:12px;">
+      <span style="color:#C42030;font-weight:700;">⚡ Required action: </span><span style="color:#0F2044;font-weight:500">${s.action}</span>
+    </div>` : ''}
+    <div style="font-size:11px;color:#5A7A9A;margin-top:6px;">Template guidance: ${t ? t.guidance.substring(0,120) + '…' : '—'}</div>
+  </div>`;
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderCompareTable() {
+  const container = document.getElementById('compare-table');
+  if (!container) return;
+  const sectionNames = nationalTemplate.map(s => s.num + ' ' + s.title.split(' ')[0]);
+  let html = `<div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:11px;">
+      <thead>
+        <tr>
+          <th style="padding:9px 12px;text-align:left;font-weight:700;color:#0F2044;border-bottom:2px solid #D8E4F0;white-space:nowrap;background:#F4F7FC;">Bank</th>
+          ${sectionNames.map(n => `<th style="padding:6px 4px;text-align:center;font-weight:700;color:#3A5070;border-bottom:2px solid #D8E4F0;white-space:nowrap;background:#F4F7FC;font-size:9px;writing-mode:vertical-lr;height:80px;">${n}</th>`).join('')}
+          <th style="padding:8px 12px;text-align:center;font-weight:700;color:#3A5070;border-bottom:2px solid #D8E4F0;background:#EEF3FA;">Overall</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${compareData.map((bank, bi) => `
+          <tr style="${bi%2===0?'background:#FFFFFF':'background:#F2F6FC'}">
+            <td style="padding:8px 12px;font-weight:500;color:#0F2044;white-space:nowrap;">${bank.bank}</td>
+            ${bank.scores.map(score => {
+              const col2 = score >= 85 ? '#0A5E2A' : score >= 60 ? '#7A4800' : '#B01020';
+              const bg2 = score >= 85 ? '#E8F5EE' : score >= 60 ? '#FEF4E2' : '#FDECEA';
+              return `<td style="padding:4px;text-align:center;"><div style="background:${bg2};color:${col2};border-radius:4px;padding:3px 5px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;">${score}</div></td>`;
+            }).join('')}
+            <td style="padding:8px 12px;text-align:center;">
+              <div style="background:${bank.overall>=80?'#E8F5EE':'#FEF4E2'};color:${bank.overall>=80?'#0A5E2A':'#7A4800'};
+                   border-radius:6px;padding:4px 8px;font-family:'DM Mono',monospace;font-size:12px;font-weight:600;">${bank.overall}%</div>
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+  <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#3A5070;font-weight:600;">
+      <div style="width:12px;height:12px;border-radius:2px;background:rgba(34,197,94,0.3);"></div>≥85% Compliant
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#3A5070;font-weight:600;">
+      <div style="width:12px;height:12px;border-radius:2px;background:rgba(245,158,11,0.3);"></div>60–84% Partial
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#3A5070;font-weight:600;">
+      <div style="width:12px;height:12px;border-radius:2px;background:rgba(239,68,68,0.3);"></div>&lt;60% Gap
+    </div>
+  </div>`;
+  container.innerHTML = html;
+}
+
+function initTemplate() {
+  renderNationalTemplate();
+  renderGapSections();
+  renderCompareTable();
+}
+
+function switchTplTab(tab) {
+  ['template','gaps','compare'].forEach(t => {
+    const panel = document.getElementById('tpl-panel-' + t);
+    const btn   = document.getElementById('tpl-tab-' + t);
+    if (!panel || !btn) return;
+    const active = t === tab;
+    panel.style.display     = active ? 'block' : 'none';
+    btn.style.borderBottom  = active ? '3px solid #0055A5' : '3px solid transparent';
+    btn.style.color         = active ? '#0055A5' : '#3A5070';
+    btn.style.fontWeight    = active ? '700' : '500';
+    btn.style.background    = active ? '#FFFFFF' : 'none';
+  });
+}
+
+function runTemplateAnalysis() {
+  switchTplTab('gaps');
+  const bar = document.getElementById('coverage-bar2');
+  const pct = document.getElementById('coverage-pct2');
+  if (!bar) return;
+  bar.style.width = '0%';
+  let v = 0;
+  const iv = setInterval(() => {
+    v += 3;
+    bar.style.width = Math.min(v, 78) + '%';
+    if (pct) pct.textContent = Math.min(v, 78) + '%';
+    if (v >= 78) clearInterval(iv);
+  }, 30);
+}
+
+function resetTemplate() {
+  switchTplTab('template');
+}
+
+/* ══════════════════════════
+   ENGINE 3 — MAPPING
+══════════════════════════ */
+const mappingData = [
+  { group:'Group Policy GP-AML-04: KYC verification within 3 business days', local:'CSSF requirement: KYC within 5 business days', status:'apply', reason:'Group standard is stricter — applies directly' },
+  { group:'Group Policy GP-AML-09: EDD for clients > €500k AUM', local:'CSSF requirement: EDD for clients > €250k AUM', status:'override', reason:'CSSF rule is stricter — local rule overrides group policy' },
+  { group:'Group Policy GP-AML-12: STR filing within 5 business days', local:'CSSF Circular 2024/847: STR filing within 3 business days', status:'override', reason:'CSSF requires faster filing — group standard insufficient' },
+  { group:'Group Policy GP-AML-18: Annual AML training mandatory', local:'CSSF guideline: Annual training + new-joiner training', status:'adapt', reason:'Group policy adapted: new-joiner training added for Luxembourg' },
+  { group:'Group Policy GP-AML-22: Sanctions screening monthly', local:'CSSF expectation: Daily sanctions screening', status:'override', reason:'CSSF expects daily screening — group monthly standard overridden' },
+  { group:'Group Policy GP-AML-31: PEP review every 24 months', local:'CSSF guideline: PEP review every 12 months', status:'override', reason:'CSSF requires more frequent review — local rule applies' },
+  { group:'Group Policy GP-AML-35: Risk scoring methodology (Group model)', local:'Luxembourg NRA: Adapted risk model required', status:'adapt', reason:'Group model adapted to reflect Luxembourg National Risk Assessment' },
+];
+
+function initMapping() {
+  const out = document.getElementById('mapping-output');
+  if (!out) return;
+  out.innerHTML = '';
+  mappingData.slice(0, 4).forEach(m => {
+    const col = m.status === 'apply' ? 'ms-apply' : m.status === 'adapt' ? 'ms-adapt' : 'ms-override';
+    const label = m.status === 'apply' ? 'Applied directly' : m.status === 'adapt' ? 'Adapted for Luxembourg' : 'Overridden by CSSF';
+    out.innerHTML += `<div class="mapping-row">
+      <div class="map-source">
+        <div class="map-tag">BNP Group (Paris)</div>
+        <div class="map-rule">${m.group}</div>
+      </div>
+      <div class="map-arrow">→</div>
+      <div class="map-local">
+        <div class="map-tag">Luxembourg / CSSF</div>
+        <div class="map-rule">${m.local}</div>
+        <div class="map-status-tag ${col}">${label}</div>
+      </div>
+    </div>`;
+  });
+}
+
+function runMapping() {
+  const steps = ['ms1','ms2','ms3','ms4'];
+  const stepLabels = ['Reading group summary…', 'Loading CSSF requirements…', 'Comparing rule sets…', 'Generating declaration…'];
+  const out = document.getElementById('mapping-demo-output');
+  const lbl = document.getElementById('map-step-label');
+  steps.forEach(s => { document.getElementById(s).className = 'step-item'; });
+  out.innerHTML = '<span style="color:#2C4A6E">🔄 Generating Mapping Declaration for Small Bank/Group HQ Luxembourg…</span>';
+  let i = 0;
+  function next() {
+    if (i < steps.length) {
+      document.getElementById(steps[i]).className = 'step-item done purple';
+      lbl.textContent = stepLabels[i];
+      i++; setTimeout(next, 500);
+    } else {
+      lbl.textContent = '✓ Declaration ready';
+      renderMappingResults(out);
+    }
+  }
+  next();
+}
+
+function renderMappingResults(out) {
+  const applied  = mappingData.filter(m => m.status === 'apply').length;
+  const adapted  = mappingData.filter(m => m.status === 'adapt').length;
+  const overridden = mappingData.filter(m => m.status === 'override').length;
+  let html = `<div class="slide-in" style="margin-bottom:12px;">
+    <span class="status-badge badge-green" style="margin-right:4px">${applied} applied</span>
+    <span class="status-badge badge-amber" style="margin-right:4px">${adapted} adapted</span>
+    <span class="status-badge badge-purple" style="margin-right:4px">${overridden} overridden by CSSF</span>
+    <div style="margin-top:8px;font-size:11px;color:#3A5070;font-weight:500">Group document stays in Paris. Zero pages transferred. CSSF sees full compliance picture.</div>
+  </div>`;
+  mappingData.forEach(m => {
+    const col = m.status === 'apply' ? 'doc-ok' : m.status === 'adapt' ? 'doc-warn' : 'doc-purple';
+    const badge = m.status === 'apply' ? 'badge-green' : m.status === 'adapt' ? 'badge-amber' : 'badge-purple';
+    const label = m.status === 'apply' ? 'Applied' : m.status === 'adapt' ? 'Adapted' : 'CSSF overrides group';
+    html += `<div class="doc-item ${col} slide-in" style="color:#0F2044">
+      <div class="doc-content">
+        <div class="doc-title" style="color:#0F2044">${m.group.split(':')[0]}</div>
+        <div class="doc-meta" style="margin-bottom:3px;color:#3A5070;font-weight:500">${m.reason}</div>
+      </div>
+      <span class="status-badge ${badge}">${label}</span>
+    </div>`;
+  });
+  html += `<div class="alert-box alert-green" style="margin-top:10px">
+    <div class="alert-title">✓ Mapping Declaration complete — blockchain hash generated</div>
+    <div class="hash-display">sha256:d7e3a91f2c845b...0e2 · Timestamp: ${new Date().toISOString().slice(0,19)}</div>
+  </div>`;
+  out.innerHTML = html;
+}
+
+function resetMapping() {
+  const out = document.getElementById('mapping-demo-output');
+  if (out) out.innerHTML = '<span style="color:#7A90AA;font-weight:500">→ Click "Generate Mapping Declaration" to begin…</span>';
+  ['ms1','ms2','ms3','ms4'].forEach(s => { document.getElementById(s).className = 'step-item'; });
+  document.getElementById('map-step-label').textContent = 'Ready';
+}
+
+/* ══════════════════════════
+   ENGINE 4 — DUAL OUTPUT
+══════════════════════════ */
+const dualScenarios = {
+  wire: {
+    name: 'Suspicious wire transfer to high-risk country',
+    amount: '€38,000',
+    description: 'Wire to an account in a FATF high-risk jurisdiction — client cannot explain business purpose',
+    progStatus: 'green',
+    drift: 'Green',
+    gaps: [
+      'Section 6.3: STR filing deadline procedure not updated (still 5 days, must be 3 business days)',
+      'Section 3.4: Source-of-funds checklist does not cover international wire transfers above €15,000'
+    ],
+    suggest: 'Update Section 6.3 deadline within 30 days to comply with CSSF 2024/569. Extend source-of-funds checklist.'
+  },
+  crypto: {
+    name: 'Unusual cash deposit pattern (structuring)',
+    amount: '€9,400',
+    description: 'Three cash deposits of €9,400 on consecutive days — structuring suspicion',
+    progStatus: 'amber',
+    drift: 'Amber',
+    gaps: [
+      'Section 5.3: No structuring detection rule configured in monitoring system (HIGH)',
+      'Section 4.4: Non-resident client EDD procedure not documented',
+      'Section 6.3: STR deadline still 5 days — must be updated to 3 business days'
+    ],
+    suggest: 'Priority action: configure structuring detection rules and update STR deadline procedure before next CSSF inspection'
+  },
+  cash: {
+    name: 'Unusual cash deposits — structuring pattern',
+    amount: '€28,500',
+    description: 'Client made four cash deposits of ~€7,000 across one week — consistent structuring pattern',
+    progStatus: 'green',
+    drift: 'Green',
+    gaps: [
+      'Section 5.3: Structuring detection rule not yet configured — monitoring system will not auto-flag this pattern',
+      'Section 10.2: Cash transaction monitoring rules not reviewed in 22 months'
+    ],
+    suggest: 'Programme substantially compliant. Priority: add structuring detection rule to monitoring system before next CSSF review.'
+  }
+};
+
+function runDualOutput(type) {
+  const scenario = dualScenarios[type];
+  const steps = ['ds1','ds2','ds3','ds4','ds5','ds6'];
+  const stepLabels = [
+    'Receiving transaction data…',
+    'Checking programme version…',
+    'Calculating drift status…',
+    'Generating governance hash…',
+    'Building CRF output (A)…',
+    'Building bank report (B)…'
+  ];
+  const out = document.getElementById('dual-output');
+  const lbl = document.getElementById('dual-step-label');
+  steps.forEach(s => { document.getElementById(s).className = 'step-item'; });
+  out.innerHTML = `<span style="color:#2C4A6E">🔄 Processing: <strong style="color:#FFFFFF">${scenario.name}</strong></span>`;
+  let i = 0;
+  function next() {
+    if (i < steps.length) {
+      document.getElementById(steps[i]).className = 'step-item done';
+      lbl.textContent = stepLabels[i];
+      i++; setTimeout(next, 380);
+    } else {
+      lbl.textContent = '✓ Both outputs ready';
+      renderDualResults(scenario, out);
+    }
+  }
+  next();
+}
+
+function renderDualResults(s, out) {
+  const driftClass = s.drift === 'Green' ? 'drift-green' : s.drift === 'Amber' ? 'drift-amber' : 'drift-red';
+  const driftBadge = s.drift === 'Green' ? 'badge-green' : s.drift === 'Amber' ? 'badge-amber' : 'badge-red';
+  const gapBadge = s.gaps.length > 1 ? 'badge-red' : 'badge-amber';
+  const hash = 'sha256:' + Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,14) + '…';
+  const ts = new Date().toISOString().slice(0,19);
+
+  let gapHtml = s.gaps.map(g =>
+    `<div class="doc-item doc-teal slide-in" style="margin-bottom:6px">
+      <div class="doc-icon">⚠️</div>
+      <div class="doc-content"><div class="doc-meta">${g}</div></div>
+    </div>`
+  ).join('');
+
+  out.innerHTML = `<div class="slide-in">
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+      <span class="status-badge badge-blue" style="color:#003A8A">Transaction: ${s.amount}</span>
+      <span class="status-badge ${driftBadge}">Drift: ${s.drift}</span>
+      <span class="status-badge ${gapBadge}">${s.gaps.length} gap${s.gaps.length !== 1 ? 's' : ''} found</span>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:#3A5070;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">
+      📤 Output A — For CRF (Financial Intelligence Unit)
+    </div>
+    <div class="drift-indicator ${driftClass}" style="margin-bottom:8px">
+      <div class="drift-dot"></div>
+      <div>
+        <div class="drift-label">Programme drift: ${s.drift}</div>
+        <div class="drift-detail">Last updated: within 30 days · Regulatory version: CSSF 2024/847 aligned</div>
+      </div>
+    </div>
+    <div class="doc-item doc-blue" style="margin-bottom:4px">
+      <div class="doc-content">
+        <div class="doc-title">Programme hash · Regulatory hash · Attestation</div>
+        <div class="doc-meta hash-display">${hash} · ${ts}</div>
+      </div>
+    </div>
+    <div class="doc-item doc-blue" style="margin-bottom:12px">
+      <div class="doc-content">
+        <div class="doc-meta">No personal data · No gaps disclosed · Governance context only</div>
+      </div>
+      <span class="status-badge badge-green">GDPR safe</span>
+    </div>
+
+    <div style="font-size:11px;font-weight:600;color:#006070;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">
+      📥 Output B — For Small Bank only (private, never shared with CSSF)
+    </div>
+    ${gapHtml}
+    <div class="alert-box alert-blue" style="margin-top:6px">
+      <div class="alert-title">Recommendation</div>
+      <span style="color:#0F2044;font-weight:500">${s.suggest}</span>
+    </div>
+  </div>`;
+}
+
+/* ── INIT ── */
+initTemplate();
+initMapping();
+</script>
+</body>
+</html>
