@@ -850,7 +850,7 @@ body::before {
       <div class="person-bubble">
         <div class="avatar av-hq">HQ</div>
         <div class="speech">
-          <div class="speech-name">BNP Paribas HQ — Paris</div>
+          <div class="speech-name">Bank HQ</div>
           "Our group AML policy is 200 pages. It is confidential. Do NOT share it outside France. All subsidiaries must follow it."
         </div>
       </div>
@@ -897,7 +897,7 @@ body::before {
   <!-- INTERACTIVE DEMO -->
   <div class="demo-area">
     <div class="section-title">Live Demo — Generate Mapping Declaration for Small Bank</div>
-    <p style="font-size:13px;color:#3A5070;margin-bottom:16px;">The Mapping Engine analyses BNP Paribas Group policies against CSSF requirements and generates a declaration — without ever ingesting the confidential group document.</p>
+    <p style="font-size:13px;color:#3A5070;margin-bottom:16px;">The Mapping Engine analyses Bank Group policies against CSSF requirements and generates a declaration — without ever ingesting the confidential group document.</p>
 
     <div class="demo-controls">
       <button class="demo-btn" style="background:#5A30A0;color:#FFFFFF;font-weight:500" onclick="runMapping()">▶ Generate Mapping Declaration</button>
@@ -1014,12 +1014,7 @@ body::before {
           <div><div class="drift-label">Programme status: Green ✓</div>
           <div class="drift-detail">AML programme current · Last updated 12 days ago</div></div>
         </div>
-        <div class="doc-item doc-blue" style="margin-top:6px">
-          <div class="doc-content">
-            <div class="doc-title">Programme hash</div>
-            <div class="doc-meta hash-display">sha256:a4f2c8e1b9d3...7f41</div>
-          </div>
-        </div>
+        
         <div class="doc-item doc-blue">
           <div class="doc-content">
             <div class="doc-title">Regulatory version</div>
@@ -1387,7 +1382,7 @@ const bglGapData = [
   { num:'08', title:'Training & Awareness',          status:'complete', coverage:82,  bglStatus:'Annual e-learning in place. New joiner training confirmed. MLCO CPD tracked. Gap: no documentation that staff were briefed on CSSF 2024/569 EDD and STR deadline changes.',  action:'Issue staff briefing note on 2024/569 updates. Log completion.' },
   { num:'09', title:'Record Keeping',                status:'complete', coverage:90,  bglStatus:'10-year retention for most records. Digital storage in OpenText. GDPR data minimisation confirmed. Access controls documented. Strong compliance.',  action:null },
   { num:'10', title:'Internal Controls & Audit',     status:'partial',  coverage:55,  bglStatus:'Annual internal audit performed. Three-lines model described. Gaps: findings log maintained in Excel only (no formal system), 3 open findings with no target closure date set.',  action:'Formalise findings log. Assign closure dates to 3 open findings. Consider quarterly reporting.' },
-  { num:'11', title:'Group-to-Local Alignment',      status:'missing',  coverage:12,  bglStatus:'CRITICAL GAP: No Mapping Declaration exists. Small Bank references "BNP Paribas Group AML Policy" in its programme but provides no analysis of which rules apply locally, which are adapted, and which are overridden by CSSF.', action:'URGENT: Use LuxAML Fabric Engine 3 to generate Mapping Declaration. Required for CSSF audit readiness.' },
+  { num:'11', title:'Group-to-Local Alignment',      status:'missing',  coverage:12,  bglStatus:'CRITICAL GAP: No Mapping Declaration exists. Small Bank references "Bank Group AML Policy" in its programme but provides no analysis of which rules apply locally, which are adapted, and which are overridden by CSSF.', action:'URGENT: Use LuxAML Fabric Engine 3 to generate Mapping Declaration. Required for CSSF audit readiness.' },
   { num:'12', title:'AMLA Readiness',                status:'missing',  coverage:8,   bglStatus:'CRITICAL GAP: No AMLA readiness section exists. EU AMLR gap assessment not performed. AMLA direct supervision implications not assessed. This is a high-priority gap for 2026.',  action:'URGENT: Complete EU AMLR gap assessment. Use LuxAML Fabric maturity dashboard as baseline.' },
 ];
 
@@ -1608,7 +1603,7 @@ function initMapping() {
     const label = m.status === 'apply' ? 'Applied directly' : m.status === 'adapt' ? 'Adapted for Luxembourg' : 'Overridden by CSSF';
     out.innerHTML += `<div class="mapping-row">
       <div class="map-source">
-        <div class="map-tag">BNP Group (Paris)</div>
+        <div class="map-tag">Bank Group (HQ)</div>
         <div class="map-rule">${m.group}</div>
       </div>
       <div class="map-arrow">→</div>
@@ -1664,10 +1659,7 @@ function renderMappingResults(out) {
       <span class="status-badge ${badge}">${label}</span>
     </div>`;
   });
-  html += `<div class="alert-box alert-green" style="margin-top:10px">
-    <div class="alert-title">✓ Mapping Declaration complete — blockchain hash generated</div>
-    <div class="hash-display">sha256:d7e3a91f2c845b...0e2 · Timestamp: ${new Date().toISOString().slice(0,19)}</div>
-  </div>`;
+  html += 
   out.innerHTML = html;
 }
 
@@ -1781,12 +1773,7 @@ function renderDualResults(s, out) {
         <div class="drift-detail">Last updated: within 30 days · Regulatory version: CSSF 2024/847 aligned</div>
       </div>
     </div>
-    <div class="doc-item doc-blue" style="margin-bottom:4px">
-      <div class="doc-content">
-        <div class="doc-title">Programme hash · Regulatory hash · Attestation</div>
-        <div class="doc-meta hash-display">${hash} · ${ts}</div>
-      </div>
-    </div>
+    
     <div class="doc-item doc-blue" style="margin-bottom:12px">
       <div class="doc-content">
         <div class="doc-meta">No personal data · No gaps disclosed · Governance context only</div>
